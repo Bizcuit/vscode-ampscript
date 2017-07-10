@@ -1,0 +1,39 @@
+{
+	"name": "AMPscript",
+	"displayName": "AMPscript syntax highlighting",
+	"description": "Syntax highlighting for AMPscript (Salesforce Marketing Cloud / Exacttarget)",
+	"version": "0.0.2",
+	"publisher": "sergey-agadzhanov",
+	"engines": {
+		"vscode": "^1.12.0"
+	},
+	"categories": [
+		"Languages"
+	],
+	"contributes": {
+		"languages": [
+			{
+				"id": "AMPscript",
+				"aliases": [
+					"AMPscript"
+				],
+				"extensions": [
+					".amp"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "AMPscript",
+				"scopeName": "source.AMP",
+				"path": "./syntaxes/AMP.tmLanguage"
+			}
+		]
+	},
+	"__metadata": {
+		"id": "47cde916-d321-4431-996b-009c1166cecf",
+		"publisherId": "887b5b26-7dcf-4f99-9675-b1935ffcdc24",
+		"publisherDisplayName": "Agadzhanov Sergey"
+	}
+}
