@@ -1,9 +1,9 @@
 {
-	"name": "AMPscript-Highlighting",
-	"displayName": "AMPscript Highlighting",
+	"name": "AMPscript",
+	"displayName": "AMPscript",
 	"description": "Syntax highlighting for AMPscript (Salesforce Marketing Cloud / Exacttarget)",
 	"version": "1.1.1",
-	"publisher": "joe-marshall",
+	"publisher": "sergey-agadzhanov",
 	"engines": {
 		"vscode": "^1.12.0"
 	},
@@ -34,13 +34,13 @@
 	"__metadata": {
 		"id": "47cde916-d321-4431-996b-009c1166cecf",
 		"publisherId": "887b5b26-7dcf-4f99-9675-b1935ffcdc24",
-		"publisherDisplayName": "Joe Marshall"
+		"publisherDisplayName": "Agadzhanov Sergey"
 	},
 
 	"repository" :
 	{ 
 		"type": "git",
-		"url": "https://github.com/Tocseoj/vscode-ampscript.git"
+		"url": "https://github.com/Bizcuit/vscode-ampscript.git"
 	},
 
 	"icon": "logo.png"
