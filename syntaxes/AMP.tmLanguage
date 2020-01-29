@@ -303,6 +303,14 @@
 						<key>name</key>
 						<string>support.variable.AMP</string>
 					</dict>
+
+					<dict>
+						<key>match</key>
+						<string>((?i:AND|OR|NOT)\b)</string>
+						<key>name</key>
+						<string>support.class.AMP</string>
+					</dict>
+
 					<!--dict>
 						<key>match</key>
 						<string>\b([a-zA-Z0-9_]+)\b</string>
