@@ -2,7 +2,7 @@
 	"name": "AMPscript",
 	"displayName": "AMPscript",
 	"description": "Syntax highlighting for AMPscript (Salesforce Marketing Cloud / Exacttarget)",
-	"version": "1.2.0",
+	"version": "1.2.1",
 	"publisher": "sergey-agadzhanov",
 	"engines": {
 		"vscode": "^1.12.0"
