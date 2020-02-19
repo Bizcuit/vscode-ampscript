@@ -1,0 +1,214 @@
+{
+	"version": "2.0",
+	"name": "AMPScript",
+	"scopeName": "source.amp",
+	"keyEquivalent": "@A",
+	"foldingStartMarker": "%%\\[\\s*$",
+	"foldingStopMarker": "^\\s*\\]%%$",
+	"injections": {
+		"R:comment.block,comment.block.html,meta.attribute": {
+			"patterns": [
+				{
+					"include": "#ampscript"
+				},
+				{
+					"include": "#ampscript-substitutions"
+				}
+			]
+		}
+	},
+	"patterns": [
+		{
+			"include": "#ampscript"
+		},
+		{
+			"include": "#ampscript-substitutions"
+		},
+		{
+			"include": "text.html.basic"
+		}
+	],
+	"repository": {
+		"ampscript": {
+			"name": "meta.embedded.amp",
+			"begin": "(%%[=\\[])",
+			"end": "([\\]=]%%)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.namespace.amp"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "keyword.other.namespace.amp"
+				}
+			},
+			"patterns": [
+				{
+					"include": "#ampscript-comments"
+				},
+				{
+					"include": "#ampscript-functions"
+				},
+				{
+					"include": "#ampscript-numeric"
+				},
+				{
+					"include": "#ampscript-contstants"
+				},
+				{
+					"include": "#ampscript-language-elements"
+				},
+				{
+					"include": "#ampscript-strings"
+				}
+			]
+		},
+		"ampscript-comments": {
+			"patterns": [
+				{
+					"name": "comment.block.amp",
+					"begin": "/\\*",
+					"captures": {
+						"0": {
+							"name": "punctuation.definition.comment.amp"
+						}
+					},
+					"end": "\\*/"
+				},
+				{
+					"name": "comment.line.double-slash.amp",
+					"match": "(//).*$\\n?",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.comment.amp"
+						}
+					}
+				}
+			]
+		},
+		"ampscript-functions": {
+			"name": "support.function.amp",
+			"match": "((?i:addobjectarrayitem|createobject|invokecreate|invokedelete|invokeexecute|invokeperform|invokeretrieve|invokeupdate|raiseerror|setobjectproperty|upsertcontact|attachfile|barcodeurl|beginimpressionregion|buildoptionlist|buildrowsetfromstring|buildrowsetfromxml|contentarea|contentblockbyid|contentareabyname|contentblockbyid|contentblockbykey|contentblockbyname|contentimagebyid|contentimagebykey|createsmsconversation|endimpressionregion|endsmsconversation|getportfolioitem|image|setsmsconversationnextkeyword|transformxml|treatascontent|treatascontentarea|wat|watp|claimrow|claimrowvalue|dataextensionrowcount|deletedata|deletede|executefilter|executefilterorderedrows|field|insertdata|insertde|lookup|lookuporderedrows|lookuprows|lookuprowscs|row|rowcount|updatedata|updatede|upsertdata|upsertde|dateadd|datediff|dateparse|datepart|formatdate|localdatetosystemdate|now|systemdatetolocaldate|base64decode|base64encode|decryptsymmetric|encryptsymmetric|guid|md5|sha1|sha256|sha512|httpget|httppost|httppost2|httprequestheader|ischtmlbrowser|redirectto|urlencode|wraplongurl|add|divide|formatcurrency|formatnumber|mod|multiply|random|subtract|addmscrmlistmember|createmscrmrecord|describemscrmentities|describemscrmentityattributes|retrievemscrmrecords|retrievemscrmrecordsfetchxml|setstatemscrmrecord|updatemscrmrecords|upsertmscrmrecord|createsalesforceobject|longsfid|retrievesalesforcejobsources|retrievesalesforceobjects|updatesinglesalesforceobject|authenticatedemployeeid|authenticatedemployeenotificationaddress|authenticatedemployeeusername|authenticatedenterpriseid|authenticatedmemberid|authenticatedmembername|cloudpagesurl|isnulldefault|livecontentmicrositeurl|micrositeurl|queryparameter|redirect|requestparameter|getpublishedsocialcontent|getsocialpublishurl|getsocialpublishurlbyname|char|concat|format|indexof|length|lowercase|propercase|regexmatch|replace|replacelist|stringtodate|stringtohex|substring|trim|uppercase|attributevalue|domain|empty|iif|isemailaddress|isnull|isphonenumber|output|outputline|v)\\b)(?=\\()"
+		},
+		"ampscript-numeric": {
+			"name": "constant.numeric.amp",
+			"match": "\\b((0(x|X)[0-9a-fA-F]+)|([0-9]+(\\.[0-9]+)?))\\b"
+		},
+		"ampscript-contstants": {
+			"patterns": [
+				{
+					"name": "constant.language.boolean.true.amp",
+					"match": "((?i:true)\\b)"
+				},
+				{
+					"name": "constant.language.boolean.false.amp",
+					"match": "((?i:false)\\b)"
+				},
+				{
+					"name": "constant.language.boolean.null.amp",
+					"match": "((?i:null)\\b)"
+				}
+			]
+		},
+		"ampscript-language-elements": {
+			"patterns": [
+				{
+					"name": "keyword.control.amp",
+					"match": "((?i:do|else|elseif|for|if|endif|next|then|to|downto)\\b)"
+				},
+				{
+					"name": "storage.type.amp",
+					"match": "((?i:var|set)\\b)"
+				},
+				{
+					"name": "variable.parameter.amp",
+					"match": "\\@[a-zA-Z0-9_]+"
+				},
+				{
+					"name": "variable.parameter.amp",
+					"match": "\\[[a-zA-Z0-9_]+\\]"
+				},
+				{
+					"name": "variable.parameter.amp",
+					"match": "\\b((?i:xtmonth|xtmonthnumeric|xtday|xtdayofweek|xtyear|xtshortdate|xtlongdate|linkname|linkname|emailname_|_messagecontext|_messagetypepreference|_replycontent|_istestsend|jobid|_preheader|double_opt_in_url|emailaddr|fullname_|fullname|firstname_|firstname|lastname_|lastname|comment_|comment|subscriberid|_subscriberkey|listid|list_|listsubid|_messagetypepreference|mobile_number|short_code|_listname|_emailid|_jobsubscriberbatchid|_datasourcename|_impressionregionid|_impressionregionname|replyname|replyemailaddress|memberid|member_busname|member_addr|member_city|member_state|member_postalcode|member_country|view_email_url|ftaf_url|subscription_center_url|profile_center_url|unsub_center_url|mobile_number|short_code|line_address_id|line_job_id|line_subscriber_id|additionalinfo_|__additionalemailattribute1|__additionalemailattribute2|__additionalemailattribute3|__additionalemailattribute4|__additionalemailattribute5))\\b"
+				},
+				{
+					"name": "support.class.amp",
+					"match": "((?i:and|or|not)\\b)"
+				},
+				{
+					"name": "variable.operator.amp",
+					"match": "==|!=|>|<|>=|<=|="
+				}
+			]
+		},
+		"ampscript-strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.double.amp",
+					"begin": "\"",
+					"end": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.amp"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.amp"
+						}
+					},
+					"patterns": [
+						{
+							"name": "constant.character.escape.amp",
+							"match": "\\\\\""
+						}
+					]
+				},
+				{
+					"name": "string.quoted.single.amp",
+					"begin": "'",
+					"end": "'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.amp"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.amp"
+						}
+					},
+					"patterns": [
+						{
+							"name": "constant.character.escape.amp",
+							"match": "\\\\'"
+						}
+					]
+				}
+			]
+		},
+		"ampscript-substitutions": {
+			"name": "meta.embedded.amp",
+			"begin": "(%%)",
+			"end": "(%%)",
+			"beginCaptures": {
+				"1": {
+					"name": "keyword.other.namespace.amp"
+				}
+			},
+			"endCaptures": {
+				"1": {
+					"name": "keyword.other.namespace.amp"
+				}
+			},
+			"patterns": [
+				{
+					"name": "variable.parameter.amp",
+					"match": "[a-zA-Z0-9_]+"
+				}
+			]
+		}
+	}
+}
