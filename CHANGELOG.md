@@ -5,7 +5,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [1.3.0] - 2020-02-19
 ### Changed
-- Migration of grammar to a JSON format
+- Migration of the grammar to a JSON format
 - Revision of the grammar
 ### Added
 - Highlighting in HTML attributes 
