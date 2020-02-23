@@ -1,0 +1,26 @@
+%%[
+	ContentBlockByKey("INIT")
+	SET @Dataextension = "MasterData"
+	SET @Data = LookupRows(@Dataextension, "SubscriberKey", _subscriberkey)
+
+	IF RowCount(@Data) > 0 THEN
+		SET @DataRow  = Row(@Data, 1)
+
+		SET @Image    = Field(@DataRow, "Image")
+		SET @Headline = Field(@DataRow, "Headline")
+		SET @Text     = Field(@DataRow, "Text")
+		SET @CTA_URL  = Field(@DataRow, "CTA_URL")
+	ENDIF
+
+	
+]%%
+
+<div class="html-with-ampscript">
+	<img src="%%=V(@Image)=%%" width="100%" style="border: 0;" />
+	<h1>%%=V(@Headline)=%%</h1>
+	<p>%%=TreatAsContent(@Text)=%%</p>
+	<a href="%%=RedirectTo(@CTA_URL)=%%">INSTALL ME</a>
+</div>
+
+
+

@@ -3,6 +3,10 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [1.4.0] - 2020-02-25
+### Added
+- Code snippets for all functions and some language elements 
+
 ## [1.3.0] - 2020-02-19
 ### Changed
 - Migration of the grammar to a JSON format
