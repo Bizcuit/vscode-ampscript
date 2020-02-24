@@ -15,7 +15,10 @@
 		"amp",
 		"salesforce",
 		"exacttarget",
-		"marketing cloud"
+		"marketing cloud",
+		"sfmc",
+		"mc",
+		"content builder"
 	],
 	"contributes": {
 		"languages": [
