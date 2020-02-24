@@ -6,14 +6,14 @@ AMPScript is the language used to program emails, content blocks, webpages and s
 
 ### How it looks and works
 
-###### Demo
+#### Demo
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video.gif)
 
-###### Function snippets 
+#### Function snippets 
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_snippets.png)
 
-###### Syntax highlighting
+#### Syntax highlighting
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot.png)
