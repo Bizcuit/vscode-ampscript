@@ -4,16 +4,26 @@ This extension enables syntax highlighting for AMPScript in Visual Studio Code. 
 
 AMPScript is the language used to program emails, content blocks, webpages and script activities in the Salesforce Marketing Cloud. It is not a simple task to write code directly in the UI of MC. This extensions helps you solve this problem.
 
+### How to enable
+
+You have two options on how to enable syntax highlighting:
+
+* Open a file that has a ".amp" or ".ampscript" file extension
+* Manually set the language of the file to "AMPscript" (check the video below)
+
+![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video_howto.gif)
+
+
 ### How it looks and works
 
 #### Demo
 
-![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video.gif)
+![Demo](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video.gif)
 
 #### Function snippets 
 
-![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_snippets.png)
+![Function snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_snippets.png)
 
 #### Syntax highlighting
 
-![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot.png)
+![Syntax highlighting](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot.png)
