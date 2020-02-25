@@ -8,7 +8,7 @@ AMPScript is the language used to program emails, content blocks, webpages and s
 
 You have two options on how to enable syntax highlighting:
 
-* Open a file that has a ".amp" or ".ampscript" file extension
+* Open a file that has an ".amp" or an ".ampscript" file extension
 * Manually set the language of the file to "AMPscript" (check the video below)
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video_howto.gif)
