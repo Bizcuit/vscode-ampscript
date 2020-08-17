@@ -1,3 +1,11 @@
+.gitignore
 *.gif
 screenshot_snippets.png
 screenshot.png
+.vscode/**
+.vscode-test/**
+out/test/**
+test/**
+src/**
+**/*.map
+tsconfig.json

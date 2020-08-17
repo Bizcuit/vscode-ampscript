@@ -11,19 +11,19 @@ You have two options on how to enable syntax highlighting:
 * Open a file that has an ".amp" or an ".ampscript" file extension
 * Manually set the language of the file to "AMPscript" (check the video below)
 
-![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video_howto.gif)
+![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_video_howto.gif)
 
 
 ### How it looks and works
 
 #### Demo
 
-![Demo](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_video.gif)
+![Demo](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_video.gif)
 
 #### Function snippets 
 
-![Function snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot_snippets.png)
+![Function snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_snippets.png)
 
 #### Syntax highlighting
 
-![Syntax highlighting](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/screenshot.png)
+![Syntax highlighting](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot.png)

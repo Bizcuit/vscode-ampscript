@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+</head>
+<style>
+	p {
+		line-height: 20px;
+		margin-bottom: 5px;
+		padding: 0px;
+	}
+
+	img {
+		border: solid 1px darkgray;
+		width: 100%;
+		margin: 20px 0px;
+	}
+
+	h3 {
+		margin-bottom: 10px;
+		padding: 0px 10px;
+	}
+</style>
+<script>
+	function toggleReadMore() {
+		var el = document.getElementById('readmore');
+
+		if (el.style.display == "none") {
+			el.style.display = "block";
+		} else {
+			el.style.display = "none";
+		}
+	}
+</script>
+
+<body>
+	<noscript>
+		<strong>We're sorry but webview doesn't work properly without JavaScript enabled. Please enable it to
+			continue.</strong>
+	</noscript>
+
+	<h1>MCFS Connection manager</h1>
+
+	<div class="hello">
+		<p>This extensions can connect Visual Studio Code directly to your Salesforce Marketing Cloud Account. This
+			allows you to easily change content inside Marketing Cloud without leaving the text editor and helps you to
+			save time and avoid frequent copy-pasting. It also helps you to better control the content of your
+			emails,
+			content blocks and cloud pages by exposing additional content attributes that are not available in the UI
+			of
+			Marketing Cloud; it allows you to use "Super Content" in almost all supported content types.</p>
+
+		<p>
+			<button onclick="toggleReadMore()">Read how to configure...</button>
+		</p>
+
+		<div id="readmore" style="display: none;">
+			<h2>How to connect to Marketing Cloud</h2>
+
+			<table cellpadding="0" cellspacing="0" border="0" width="900">
+				<tr>
+					<td width="33%" valign="top">
+						<h3>Step #1: Go to Setup</h3>
+						<p>Log in to Marketing Cloud, hover over your user name in the top right corner and click on
+							"Setup"
+						</p>
+					</td>
+					<td width="34%" valign="top">
+						<h3>Step #2: Open "Installed packages"</h3>
+						<p>In the left-hand panel of the setup section go to "Platform tools -> Apps -> Installed
+							packages"
+						</p>
+					</td>
+					<td width="33%" valign="top">
+						<h3>Step #3: Create new Package</h3>
+						<p>Click "NEW" in the top right corner to create a new Package</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<img src="/img/howto_1-3.jpg">
+					</td>
+				</tr>
+
+				<tr>
+					<td width="33%" valign="top">
+						<h3>Step #4: Add API integration to the Package</h3>
+						<p>Click "Add Component", select "API Integration", then click "Next"
+						</p>
+					</td>
+					<td width="34%" valign="top">
+						<h3>Step #5: Select "Server-to-server" type</h3>
+						<p>... and click "Next"
+						</p>
+					</td>
+					<td width="33%" valign="top">
+						<h3>Step #6: Select required permissions</h3>
+						<p>CHANNELS: Email (Read and Write), CHANNELS: Web (Read and Write), ASSETS: Saved Content
+							(Read and Write)</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<img src="/img/howto_4-6.jpg">
+					</td>
+				</tr>
+
+				<tr>
+					<td width="33%" valign="top">
+						<h3>Step #7: Go to Access tab</h3>
+						<p>... and click "Enable All Business Units" to enable your Package for the entire MC Accout</p>
+					</td>
+					<td width="34%" valign="top">
+						<h3>Step #8: Enable Package for BUs</h3>
+						<p>... or enable Package only for some Business Units</p>
+					</td>
+					<td width="33%" valign="top">
+						<h3>Step #9: Create a new Connection in VS Code</h3>
+						<p>Copy "Authentication Base URI", "Client Id", "Client Secret" and your Business Unit ID (MID)
+							to the corresponding fields of connection manager and click "Save changes"</p>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="3">
+						<img src="/img/howto_7-9.jpg">
+					</td>
+				</tr>
+			</table>
+
+		</div>
+
+	</div>
+
+
+	<div id="app"></div>
+	<!-- built files will be auto injected -->
+</body>
+
+</html>

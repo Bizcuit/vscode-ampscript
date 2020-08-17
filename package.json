@@ -2,10 +2,10 @@
 	"name": "ampscript",
 	"displayName": "AMPscript",
 	"description": "Syntax highlighting for AMPscript (Salesforce Marketing Cloud / Exacttarget)",
-	"version": "1.4.3",
+	"version": "2.0.1",
 	"publisher": "sergey-agadzhanov",
 	"engines": {
-		"vscode": "^1.12.0"
+		"vscode": "^1.32.0"
 	},
 	"categories": [
 		"Programming Languages"
@@ -14,11 +14,25 @@
 		"ampscript",
 		"amp",
 		"salesforce",
-		"exacttarget",
 		"marketing cloud",
+		"salesforce marketing cloud",
+		"exacttarget",
 		"sfmc",
 		"mc",
-		"content builder"
+		"content builder",
+		"mcfs"
+	],
+	"main": "./out/src/extension",
+	"scripts": {
+		"vscode:prepublish": "npm run compile; npm run connectionmanager",
+		"connectionmanager": "cd ./src/connection-manager && npm run build",
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./"
+	},
+	"activationEvents": [
+		"onCommand:mcfs.open",
+		"onFileSystem:mcfs",
+		"onLanguage:AMPscript"
 	],
 	"contributes": {
 		"languages": [
@@ -32,7 +46,7 @@
 					".amp",
 					".ampscript"
 				],
-				"configuration": "./language-configuration.json"
+				"configuration": "./syntaxes/language-configuration.json"
 			}
 		],
 		"grammars": [
@@ -45,9 +59,40 @@
 		"snippets": [
 			{
 				"language": "AMPscript",
-				"path": "./snippets.json"
+				"path": "./syntaxes/snippets.json"
 			}
-		]
+		],
+		"commands": [
+			{
+				"command": "mcfs.open",
+				"title": "Connection Manager",
+				"category": "MCFS"
+			}
+		],
+		"configuration": {
+			"title": "MCFS Configuration",
+			"properties": {
+				"mcfs.connections": {
+					"title": "A list of MCFS connections",
+					"description": "Use the Settings UI to edit the list of connectons. Run command 'MCFS: Connect to account'",
+					"markdownDescription": "Use the Settings UI to edit configurations. Run command 'MCFS: Connect to account'",
+					"type": "array",
+					"items": "object",
+					"default": []
+				},
+				"mcfs.notifications": {
+					"title": "Notification paramters",
+					"description": "Use the Settings UI to edit the list of connectons. Run command 'MCFS: Connect to account'",
+					"markdownDescription": "Use the Settings UI to edit configurations. Run command 'MCFS: Connect to account'",
+					"type": "object",
+					"default": {
+						"hasOpenedConnectionManager": false,
+						"hasConnectedToMC": false,
+						"dontShowConnectionManagerAlert": false
+					}
+				}
+			}
+		}
 	},
 	"__metadata": {
 		"id": "47cde916-d321-4431-996b-009c1166cecf",
@@ -58,5 +103,13 @@
 		"type": "git",
 		"url": "https://github.com/Bizcuit/vscode-ampscript.git"
 	},
-	"icon": "logo.png"
+	"icon": "./images/logo.png",
+	"devDependencies": {
+		"@types/node": "^7.0.43",
+		"typescript": "^3.5.1",
+		"@types/vscode": "^1.32.0"
+	},
+	"dependencies": {
+		"axios": "^0.19.2"
+	}
 }
