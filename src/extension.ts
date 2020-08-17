@@ -9,9 +9,7 @@ import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } f
 let isConfigUpdated = true;
 
 export function activate(context: vscode.ExtensionContext) {
-	console.log("MCFS is activated...");
-
-	showPromoBanner();
+	console.log('AMPscript extension activated...');
 
 	let connections = getConfig('connections');
 
@@ -19,11 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 	const panel = new ConnectionManagerPanel();
 
-	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('mcfs', mcfs, { isCaseSensitive: false }));
-
-	context.subscriptions.push(vscode.commands.registerCommand('mcfs.open', _ => {
-		console.log("Utils.isMcfsInitialized() = ", Utils.isMcfsInitialized());
-
+	const openConnectionManager = () => {
 		updateConfigField('notifications', 'hasOpenedConnectionManager', true);
 
 		panel.onMessageReceived = (message: any) => {
@@ -45,22 +39,25 @@ export function activate(context: vscode.ExtensionContext) {
 				case 'UPDATE':
 					connections = message.content;
 					mcfs.setConnections(connections);
+					updateConfig('connections', connections);
 					updateConfigField('notifications', 'hasConnectedToMC', true);
-
+					vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
+					break;
 			}
 		};
 
 		panel.open(path.join(context.extensionPath, 'connection-manager'));
+	};
+
+	showPromoBanner(openConnectionManager);
+
+	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('mcfs', mcfs, { isCaseSensitive: false }));
+
+	context.subscriptions.push(vscode.commands.registerCommand('mcfs.open', _ => {
+		openConnectionManager();
 	}));
 
-	vscode.languages.registerHoverProvider('AMPscript', {
-		provideHover(document, position, token) {
-			let word = document.getText(document.getWordRangeAtPosition(position));
-			return {
-				contents: ['Hover Content: ' + word]
-			};
-		}
-	});
+	enableSnippets(context.extensionPath);
 }
 
 function connect(connection: Connection): void {
@@ -68,10 +65,15 @@ function connect(connection: Connection): void {
 		vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, 0,
 		{
 			uri: vscode.Uri.parse('mcfs://' + connection.account_id),
-			name: 'MCFS_' + connection.account_id
+			name: `MCFS_${connection.account_id}: ${connection.name}`
 		}
 	);
 	vscode.window.showInformationMessage(`Connected to ${connection.account_id}. Open File Explorer...`);
+}
+
+function getConfig(section: string): any {
+	const config = vscode.workspace.getConfiguration('mcfs');
+	return config.get(section);
 }
 
 function updateConfig(section: string, value: any) {
@@ -94,12 +96,30 @@ function updateConfigField(section: string, field: string, value: any) {
 	updateConfig(section, data);
 }
 
-function getConfig(section: string): any {
-	const config = vscode.workspace.getConfiguration('mcfs');
-	return config.get(section);
+function enableSnippets(extensionPath: string) {
+	Utils.readJSON(extensionPath + '/syntaxes/snippets.json').then(snippets => {
+		vscode.languages.registerHoverProvider('AMPscript', {
+			provideHover(document, position, token) {
+				let word = document.getText(document.getWordRangeAtPosition(position));
+
+				if (!word || word.length > 100) {
+					return null;
+				}
+
+				word = word.toLowerCase();
+
+				if (snippets[word] !== undefined && snippets[word].description) {
+					return {
+						contents: [snippets[word].description]
+					};
+				}
+				return null;
+			}
+		});
+	});
 }
 
-function showPromoBanner() {
+function showPromoBanner(connectionManagerCallback: () => void) {
 	const notifications = getConfig('notifications');
 
 	if (!notifications || notifications["dontShowConnectionManagerAlert"] || notifications["hasConnectedToMC"]) {
@@ -108,13 +128,17 @@ function showPromoBanner() {
 
 	vscode.window.showInformationMessage(
 		`Would you like to connect VSCode directly to Marketing Cloud?`,
-		"I WANT TO KNOW MORE",
-		"I DON'T CARE")
+		"YES, SOUNDS INTERESTING",
+		"CHECK ON GITHUB",
+		"NO")
 		.then(selection => {
-			if (selection == "I WANT TO KNOW MORE") {
+			if (selection == "YES, SOUNDS INTERESTING") {
+				connectionManagerCallback();
+			}
+			else if (selection == "CHECK ON GITHUB") {
 				vscode.env.openExternal(vscode.Uri.parse('https://github.com/Bizcuit/vscode-ampscript'));
 			}
-			else if (selection == "I DON'T CARE") {
+			else if (selection == "NO") {
 				updateConfigField('notifications', 'dontShowConnectionManagerAlert', true);
 			}
 		});

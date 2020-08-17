@@ -23,6 +23,10 @@
 		margin-bottom: 10px;
 		padding: 0px 10px;
 	}
+
+	li {
+		padding-top: 5px;
+	}
 </style>
 <script>
 	function toggleReadMore() {
@@ -46,15 +50,28 @@
 
 	<div class="hello">
 		<p>This extensions can connect Visual Studio Code directly to your Salesforce Marketing Cloud Account. This
-			allows you to easily change content inside Marketing Cloud without leaving the text editor and helps you to
+			allows you to easily change content in MC without leaving the text editor and helps you to
 			save time and avoid frequent copy-pasting. It also helps you to better control the content of your
-			emails,
-			content blocks and cloud pages by exposing additional content attributes that are not available in the UI
-			of
-			Marketing Cloud; it allows you to use "Super Content" in almost all supported content types.</p>
+			emails, content blocks and cloud pages by exposing additional content attributes that are not available in
+			the UI of MC; it allows you to use "Super Content" in almost all supported content types.</p>
+
+		<ol>
+			<li>In your MC accout, create a new installed package and add a 'Server-to-Server' API integration Component
+			</li>
+			<li>Add the following permissions:
+				<ul>
+					<li>CHANNELS: Email (Read and Write)</li>
+					<li>CHANNELS: Web (Read, Write, Publish)</li>
+					<li>ASSETS: Saved Content (Read and Write)</li>
+				</ul>
+			</li>
+			<li>Grant access to all required BUs</li>
+			<li>Provide package details in the connection manager below, save it and connect</li>
+			<li>You'll find the entire Content Builder library in your File Explorer tab</li>
+		</ol>
 
 		<p>
-			<button onclick="toggleReadMore()">Read how to configure...</button>
+			<button onclick="toggleReadMore()">Click for detailed instructions...</button>
 		</p>
 
 		<div id="readmore" style="display: none;">
@@ -98,7 +115,8 @@
 					</td>
 					<td width="33%" valign="top">
 						<h3>Step #6: Select required permissions</h3>
-						<p>CHANNELS: Email (Read and Write), CHANNELS: Web (Read and Write), ASSETS: Saved Content
+						<p>CHANNELS: Email (Read and Write), CHANNELS: Web (Read, Write and Publish), ASSETS: Saved
+							Content
 							(Read and Write)</p>
 					</td>
 				</tr>

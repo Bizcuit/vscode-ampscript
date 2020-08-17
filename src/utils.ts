@@ -74,4 +74,17 @@ export class Utils {
 			&& vscode.workspace.workspaceFolders.findIndex(v => v.uri.scheme === 'mcfs') >= 0
 			|| false;
 	}
+
+	public static readJSON(path: string): Promise<any> {
+		return new Promise((resolve, reject) => {
+			fs.readFile(require.resolve(path), (err, data) => {
+				if (err) {
+					reject(err)
+				}
+				else {
+					resolve(JSON.parse(data.toString('utf-8')));
+				}
+			})
+		});
+	}
 }

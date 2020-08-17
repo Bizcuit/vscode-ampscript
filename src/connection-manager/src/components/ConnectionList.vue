@@ -25,19 +25,19 @@
 						<button @click="connect(c, i)" ref="btn_connect">CONNECT</button>
 					</td>
 					<td>
-						<input type="text" v-model="c.name" />
+						<input type="text" v-model="c.name" placeholder="connection name" />
 					</td>
 					<td>
-						<input type="text" v-model="c.account_id" />
+						<input type="text" v-model="c.account_id" placeholder="business unit id" />
 					</td>
 					<td>
-						<input type="text" v-model="c.authBaseUri" />
+						<input type="text" v-model="c.authBaseUri" placeholder="api auth base uri" />
 					</td>
 					<td>
-						<input type="password" v-model="c.client_id" />
+						<input type="password" v-model="c.client_id" placeholder="client id" />
 					</td>
 					<td>
-						<input type="password" v-model="c.client_secret" />
+						<input type="password" v-model="c.client_secret" placeholder="client secret" />
 					</td>
 					<td>
 						<button class="delete" @click="remove(i)">&#10005;</button>
@@ -52,29 +52,29 @@
 export default {
 	name: "connectionList",
 	props: {
-		connections: Array
+		connections: Array,
 	},
-	data: function() {
+	data: function () {
 		return {
-			localConnections: []
+			localConnections: [],
 		};
 	},
 	methods: {
-		add: function() {
+		add: function () {
 			this.localConnections.push({
-				name: "new_" + (this.localConnections.length + 1),
+				name: "my connection " + (this.localConnections.length + 1),
 				account_id: "",
 				authBaseUri: "",
 				client_id: "",
-				client_secret: ""
+				client_secret: "",
 			});
 		},
 
-		remove: function(index) {
+		remove: function (index) {
 			this.localConnections.splice(index, 1);
 		},
 
-		connect: function(connection, index) {
+		connect: function (connection, index) {
 			if (
 				this.$refs.btn_connect &&
 				this.$refs.btn_connect.length > index
@@ -86,17 +86,17 @@ export default {
 			this.$emit("connect", connection);
 		},
 
-		save: function() {
+		save: function () {
 			this.$emit("save", this.localConnections);
-		}
+		},
 	},
 	watch: {
-		connections: function(newVal) {
+		connections: function (newVal) {
 			this.localConnections = newVal.slice(0);
-		}
+		},
 	},
 
-	components: {}
+	components: {},
 };
 </script>
 

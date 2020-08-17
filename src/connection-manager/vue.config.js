@@ -1,3 +1,4 @@
 module.exports = {
-	outputDir: "./../../connection-manager"
+	outputDir: "./../../connection-manager",
+	filenameHashing: false
 }

@@ -11,8 +11,6 @@
 		SET @Text     = Field(@DataRow, "Text")
 		SET @CTA_URL  = Field(@DataRow, "CTA_URL")
 	ENDIF
-
-	
 ]%%
 
 <div class="html-with-ampscript">
