@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
 					connections = message.content;
 					mcfs.setConnections(connections);
 					updateConfig('connections', connections);
-					updateConfigField('notifications', 'hasConnectedToMC', true);
+					//updateConfigField('notifications', 'hasConnectedToMC', true);
 					vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
 					break;
 			}
