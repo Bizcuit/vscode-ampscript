@@ -1,6 +1,6 @@
 # AMPScript syntax highlighting, code snippets and more
 
-This extension enables syntax highlighting for AMPScript in Visual Studio Code. It also adds code snippets for some language elements and for all avaialble functions. Each snippet includes a detailed description of the function and its parameters.
+This extension enables syntax highlighting for AMPScript. It also adds code snippets for some language elements and for all avaialble functions. Each snippet includes a detailed description of the function and its parameters. Snippets also show up when you hover a function name.
 
 This extensions can also connect Visual Studio Code directly to your Salesforce Marketing Cloud account. This allows you to easily change content in MC without leaving the text editor and helps you to save time and avoid frequent copy-pasting. It also helps you to better control the content of your emails, content blocks and cloud pages by exposing additional content attributes that are not available in the UI of MC; it allows you to use "Super Content" in almost all supported content types.
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="hello">
-		<h2>Connection list</h2>
+		<h2>Connections list</h2>
 
 		<div style="margin-bottom: 10px;">
 			<button @click="add()">NEW CONNECTION</button>

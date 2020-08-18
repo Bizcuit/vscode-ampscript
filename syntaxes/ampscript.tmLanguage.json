@@ -130,7 +130,7 @@
 					"match": "\\[[a-zA-Z0-9_]+\\]"
 				},
 				{
-					"name": "variable.parameter.amp",
+					"name": "variable.language.amp",
 					"match": "\\b((?i:xtmonth|xtmonthnumeric|xtday|xtdayofweek|xtyear|xtshortdate|xtlongdate|linkname|linkname|emailname_|_messagecontext|_messagetypepreference|_replycontent|_istestsend|jobid|_preheader|double_opt_in_url|emailaddr|fullname_|fullname|firstname_|firstname|lastname_|lastname|comment_|comment|subscriberid|_subscriberkey|listid|list_|listsubid|_messagetypepreference|mobile_number|short_code|_listname|_emailid|_jobsubscriberbatchid|_datasourcename|_impressionregionid|_impressionregionname|replyname|replyemailaddress|memberid|member_busname|member_addr|member_city|member_state|member_postalcode|member_country|view_email_url|ftaf_url|subscription_center_url|profile_center_url|unsub_center_url|mobile_number|short_code|line_address_id|line_job_id|line_subscriber_id|additionalinfo_|__additionalemailattribute1|__additionalemailattribute2|__additionalemailattribute3|__additionalemailattribute4|__additionalemailattribute5))\\b"
 				},
 				{
