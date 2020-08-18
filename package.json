@@ -103,7 +103,7 @@
 		"type": "git",
 		"url": "https://github.com/Bizcuit/vscode-ampscript.git"
 	},
-	"icon": "./images/logo.png",
+	"icon": "images/logo.png",
 	"devDependencies": {
 		"@types/node": "^7.0.43",
 		"typescript": "^3.5.1",
