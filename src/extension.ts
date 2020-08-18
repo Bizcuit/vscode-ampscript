@@ -7,6 +7,7 @@ import { MCFS } from './fileSystemProvider';
 import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } from './utils';
 
 let isConfigUpdated = true;
+let isConnectionManagerOpened = false;
 
 export function activate(context: vscode.ExtensionContext) {
 	console.log('AMPscript extension activated...');
@@ -49,13 +50,18 @@ export function activate(context: vscode.ExtensionContext) {
 		panel.open(path.join(context.extensionPath, 'connection-manager'));
 	};
 
-	showPromoBanner(openConnectionManager);
-
 	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('mcfs', mcfs, { isCaseSensitive: false }));
 
 	context.subscriptions.push(vscode.commands.registerCommand('mcfs.open', _ => {
+		isConnectionManagerOpened = true;
 		openConnectionManager();
 	}));
+
+	setTimeout(_ => {
+		if (!isConnectionManagerOpened) {
+			showPromoBanner(openConnectionManager);
+		}
+	}, 5000);
 
 	enableSnippets(context.extensionPath);
 }

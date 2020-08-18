@@ -18,20 +18,6 @@ export class MCUri {
 		this.globalPath = path.join('/', this.mid, this.localPath);
 	}
 
-	/*constructor(globalPath: string) {
-		this.globalPath = globalPath;
-
-		this.parts = globalPath.split('/');
-
-		if (this.parts.length > 1) {
-			this.mid = this.parts[1];
-			this.name = this.parts[this.parts.length - 1];
-			this.localPath = '/' + this.parts.slice(2).join('/');
-		}
-	}*/
-
-
-
 	public static getParent(uri: MCUri): MCUri {
 		let parts: Array<string> = uri.localPath.split('/');
 		parts.pop();
@@ -44,7 +30,8 @@ export enum MCAssetType {
 	BLOCK = 1,
 	TEMPLATE = 2,
 	EMAIL = 3,
-	WEBPAGE = 4
+	WEBPAGE = 4,
+	JSON_MESSAGE = 5
 }
 
 export enum MCAssetSubtype {
@@ -57,7 +44,8 @@ export enum MCAssetSubtype {
 	BLOCK_FREEFORM = 195,
 	BLOCK_TEXT = 196,
 	BLOCK_HTML = 197,
-	WEBPAGE = 205
+	WEBPAGE = 205,
+	JSON_MESSAGE = 230
 }
 
 export abstract class MCAssetContent {
@@ -85,13 +73,16 @@ export class MCAssetPart extends MCAssetContent {
 
 	private isChanged: boolean = false;
 
-	constructor(id: string, name: string, path: string, content: string) {
+	public isJsonContent: boolean = false;
+
+	constructor(id: string, name: string, path: string, content: string, isJsonContent: boolean = false) {
 		super();
 
 		this.id = id;
 		this.name = name;
 		this.content = content;
 		this.path = path;
+		this.isJsonContent = isJsonContent;
 	}
 
 	public hasParts(): boolean {
@@ -172,27 +163,37 @@ export class MCAsset extends MCAssetContent {
 
 		switch (this.type) {
 			case MCAssetType.BLOCK:
-				prefix = 'Ω  🟥  ';
+				prefix = '🟥';
 				suffix = '.block';
 				break;
 
 			case MCAssetType.EMAIL:
-				prefix = 'Ω  🟩  ';
+				prefix = '🟦';
 				suffix = '.email';
 				break;
 
 			case MCAssetType.TEMPLATE:
-				prefix = 'Ω  🟨  ';
+				prefix = '🟧';
 				suffix = '.template';
 				break;
 
 			case MCAssetType.WEBPAGE:
-				prefix = 'Ω  🟦  ';
+				prefix = '🟨';
 				suffix = '.cloudpage'
+				break;
+
+			case MCAssetType.JSON_MESSAGE:
+				prefix = '🟩';
+				suffix = '.jsonmessage'
+				break;
+
+			default:
+				prefix = '⬛';
+				suffix = '.unknown'
 				break;
 		}
 
-		return prefix + this.asset.name + suffix;
+		return `Ω  ${prefix}  ${this.asset.name}${suffix}`;
 	}
 
 	private getAssetTypeBySubtype(subtype: MCAssetSubtype): MCAssetType {
@@ -210,6 +211,8 @@ export class MCAsset extends MCAssetContent {
 				return MCAssetType.TEMPLATE;
 			case MCAssetSubtype.WEBPAGE:
 				return MCAssetType.WEBPAGE;
+			case MCAssetSubtype.JSON_MESSAGE:
+				return MCAssetType.JSON_MESSAGE;
 		}
 
 		return MCAssetType.UNKNOWN;
@@ -226,20 +229,53 @@ export class MCAsset extends MCAssetContent {
 					...this.getAssetPartsExtraEmail(),
 					...this.getAssetPartsFromSlots(this.asset?.views?.html?.slots)
 				];
+
 			case MCAssetType.WEBPAGE:
 				return [
 					...this.getAssetsPartsBasic(),
 					...this.getAssetPartsFromSlots(this.asset?.views?.html?.slots)
 				];
+
 			case MCAssetType.BLOCK:
 				return this.getAssetsPartsBasic();
+
 			case MCAssetType.TEMPLATE:
+				return this.getAssetsPartsBasic();
+
+			case MCAssetType.JSON_MESSAGE:
+				return [
+					...this.getAssetsPartsBasic(),
+					...this.getAssetPartsFromViews()
+				];
+			default:
 				return this.getAssetsPartsBasic();
 		}
 
 		return [];
 	}
 
+	private getAssetPartsFromViews(): Array<MCAssetPart> {
+		let result: Array<MCAssetPart> = [];
+
+		let views: Array<string> | undefined = this.asset?.availableViews;
+
+		if (!views?.length) return result;
+
+		views.forEach(viewName => {
+			let data: any = this.asset?.views[viewName]?.meta;
+			if (data) {
+				result.push(new MCAssetPart(
+					this.id,
+					viewName.toLowerCase() + '.json',
+					`views/${viewName}/meta`,
+					JSON.stringify(data, null, 2),
+					true
+				));
+			}
+		});
+
+		return result;
+	}
 
 	private getAssetPartsExtraEmail(): Array<MCAssetPart> {
 		let result: Array<MCAssetPart> = [];
@@ -379,7 +415,7 @@ export class MCAsset extends MCAssetContent {
 			ref = ref?.[path[i]];
 		}
 
-		ref[path.pop() || ''] = part.getContent();
+		ref[path.pop() || ''] = part.isJsonContent ? JSON.parse(part.getContent()) : part.getContent();
 
 		part.resetChanges();
 	}
@@ -543,7 +579,9 @@ export class MCAPI {
 							MCAssetSubtype.BLOCK_TEXT,
 							MCAssetSubtype.BLOCK_HTML,
 
-							MCAssetSubtype.WEBPAGE
+							MCAssetSubtype.WEBPAGE,
+
+							MCAssetSubtype.JSON_MESSAGE
 						]
 					}
 				}
