@@ -159,7 +159,7 @@ export class MCAsset extends MCAssetContent {
 
 	private getName(): string {
 		let suffix = '.json';
-		let prefix = 'z??? ';
+		let prefix = '';
 
 		switch (this.type) {
 			case MCAssetType.BLOCK:
@@ -257,22 +257,22 @@ export class MCAsset extends MCAssetContent {
 	private getAssetPartsFromViews(): Array<MCAssetPart> {
 		let result: Array<MCAssetPart> = [];
 
-		let views: Array<string> | undefined = this.asset?.availableViews;
+		let views: any = this.asset?.views;
 
-		if (!views?.length) return result;
-
-		views.forEach(viewName => {
-			let data: any = this.asset?.views[viewName]?.meta;
-			if (data) {
-				result.push(new MCAssetPart(
-					this.id,
-					viewName.toLowerCase() + '.json',
-					`views/${viewName}/meta`,
-					JSON.stringify(data, null, 2),
-					true
-				));
+		if (views) {
+			for (let viewName in views) {
+				let data: any = this.asset?.views[viewName]?.meta?.options?.customBlockData;
+				if (data) {
+					result.push(new MCAssetPart(
+						this.id,
+						viewName.toLowerCase() + '.json',
+						`views/${viewName}/meta/options/customBlockData`,
+						JSON.stringify(data, null, 2),
+						true
+					));
+				}
 			}
-		});
+		}
 
 		return result;
 	}
