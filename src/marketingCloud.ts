@@ -173,17 +173,17 @@ export class MCAsset extends MCAssetContent {
 				break;
 
 			case MCAssetType.TEMPLATE:
-				prefix = '🟧';
+				prefix = '🟨';
 				suffix = '.template';
 				break;
 
 			case MCAssetType.WEBPAGE:
-				prefix = '🟨';
+				prefix = '🟩';
 				suffix = '.cloudpage'
 				break;
 
 			case MCAssetType.JSON_MESSAGE:
-				prefix = '🟩';
+				prefix = '🟪';
 				suffix = '.jsonmessage'
 				break;
 
