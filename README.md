@@ -38,9 +38,11 @@ You have two options on how to enable syntax highlighting:
 
 ![Demo](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_video.gif)
 
-#### Function snippets 
+#### Hover snippets 
 
 ![Hover snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_hoversnippets.jpg)
+
+#### Code snippets 
 
 ![Function snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_snippets.png)
 
