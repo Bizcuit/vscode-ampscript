@@ -33,7 +33,12 @@ You have two options on how to enable syntax highlighting:
 
 ### How to edit Content Builder assets directly from Visual Studio Code
 
-Each asset is presented as a folder that starts with an 'Ω' symbol. You can easily distinguish different asset types based on the colored square that goes after 'Ω' (🟥 - blocks, 🟦 - emails, 🟨 - templates, 🟩 - cloudpages, 🟪 - mobile messages).
+Each asset is presented as a folder that starts with an 'Ω' symbol. You can easily distinguish different asset types based on the colored square that goes after 'Ω':
+* 🟥 - blocks
+* 🟦 - emails
+* 🟨 - templates
+* 🟩 - cloudpages
+* 🟪 - mobile messages
 
 
 ### How it looks and works
