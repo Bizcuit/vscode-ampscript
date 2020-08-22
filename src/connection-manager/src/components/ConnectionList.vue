@@ -25,19 +25,44 @@
 						<button @click="connect(c, i)" ref="btn_connect">CONNECT</button>
 					</td>
 					<td>
-						<input type="text" v-model="c.name" placeholder="connection name" />
+						<input
+							type="text"
+							v-model="c.name"
+							placeholder="connection name"
+							v-on:change="hasChanges = true"
+						/>
 					</td>
 					<td>
-						<input type="text" v-model="c.account_id" placeholder="business unit id" />
+						<input
+							type="text"
+							v-model="c.account_id"
+							placeholder="business unit id"
+							v-on:change="hasChanges = true"
+						/>
 					</td>
 					<td>
-						<input type="text" v-model="c.authBaseUri" placeholder="api auth base uri" />
+						<input
+							type="text"
+							v-model="c.authBaseUri"
+							placeholder="api auth base uri"
+							v-on:change="hasChanges = true"
+						/>
 					</td>
 					<td>
-						<input type="password" v-model="c.client_id" placeholder="client id" />
+						<input
+							type="password"
+							v-model="c.client_id"
+							placeholder="client id"
+							v-on:change="hasChanges = true"
+						/>
 					</td>
 					<td>
-						<input type="password" v-model="c.client_secret" placeholder="client secret" />
+						<input
+							type="password"
+							v-model="c.client_secret"
+							placeholder="client secret"
+							v-on:change="hasChanges = true"
+						/>
 					</td>
 					<td>
 						<button class="delete" @click="remove(i)">&#10005;</button>
@@ -57,10 +82,12 @@ export default {
 	data: function () {
 		return {
 			localConnections: [],
+			hasChanges: false,
 		};
 	},
 	methods: {
 		add: function () {
+			this.hasChanges = true;
 			this.localConnections.push({
 				name: "my connection " + (this.localConnections.length + 1),
 				account_id: "",
@@ -71,6 +98,7 @@ export default {
 		},
 
 		remove: function (index) {
+			//this.hasChanges = true;
 			this.localConnections.splice(index, 1);
 		},
 
@@ -83,10 +111,17 @@ export default {
 				this.$refs.btn_connect[index].innerHTML = "CONNECTED";
 			}
 
-			this.$emit("connect", connection);
+			if (this.hasChanges) {
+				this.save();
+			}
+
+			setTimeout(() => {
+				this.$emit("connect", connection);
+			}, 100);
 		},
 
 		save: function () {
+			this.hasChanges = false;
 			this.$emit("save", this.localConnections);
 		},
 	},
