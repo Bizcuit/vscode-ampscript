@@ -476,12 +476,12 @@ export class MCAPI {
 					resolve(token);
 				})
 				.catch((error) => {
-					reject('Unable to retrieve MC token');
+					reject('Unable to connect to MC. Check your connection config.');
 				});
 		});
 	}
 
-	async execRestApi(mid: string, config: AxiosRequestConfig) {
+	async execRestApi(mid: string, config: AxiosRequestConfig): Promise<any> {
 		let token = await this.getToken(mid);
 
 		config.baseURL = token.rest_instance_url;
@@ -497,7 +497,7 @@ export class MCAPI {
 					resolve(response.data);
 				})
 				.catch((error) => {
-					reject('API call failed! Request: ' + JSON.stringify(config) + ', Error: ' + JSON.stringify(error));
+					reject('MC API call failed. Check that your MC installed package has all required permissions.');
 				});
 		});
 	}

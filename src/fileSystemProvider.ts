@@ -47,37 +47,42 @@ export class MCFS implements vscode.FileSystemProvider {
 
 		let result: [string, vscode.FileType][] = [];
 
-		let directoryId = await this.mc.getDirectoryIdByPath(mcUri);
+		try {
+			let directoryId = await this.mc.getDirectoryIdByPath(mcUri);
 
-		let promises = await Promise.all([
-			this.mc.getSubdirectoriesByDirectoryId(mcUri.mid, directoryId),
-			this.mc.getAssetsByDirectoryId(mcUri.mid, directoryId)
-		]);
+			let promises = await Promise.all([
+				this.mc.getSubdirectoriesByDirectoryId(mcUri.mid, directoryId),
+				this.mc.getAssetsByDirectoryId(mcUri.mid, directoryId)
+			]);
 
-		let subsfolders = promises[0] as Array<any>;
-		let assets = promises[1] as Array<MCAssetContent>;
+			let subsfolders = promises[0] as Array<any>;
+			let assets = promises[1] as Array<MCAssetContent>;
 
-		subsfolders.forEach(subfolder => {
-			result.push([subfolder.name as string, vscode.FileType.Directory]);
-		});
+			subsfolders.forEach(subfolder => {
+				result.push([subfolder.name as string, vscode.FileType.Directory]);
+			});
 
-		assets.forEach(asset => {
-			let name = asset.name;
-			let path = mcUri.globalPath + (mcUri.globalPath.endsWith("/") ? "" : "/") + name;
+			assets.forEach(asset => {
+				let name = asset.name;
+				let path = mcUri.globalPath + (mcUri.globalPath.endsWith("/") ? "" : "/") + name;
 
-			this.filesCache.set(path, asset);
+				this.filesCache.set(path, asset);
 
-			if (asset.hasParts()) {
-				result.push([name, vscode.FileType.Directory]);
+				if (asset.hasParts()) {
+					result.push([name, vscode.FileType.Directory]);
 
-				(asset as MCAsset).parts.forEach(part => {
-					this.filesCache.set(path + '/' + part.name, part);
-				});
-			}
-			else {
-				result.push([name, vscode.FileType.File]);
-			}
-		});
+					(asset as MCAsset).parts.forEach(part => {
+						this.filesCache.set(path + '/' + part.name, part);
+					});
+				}
+				else {
+					result.push([name, vscode.FileType.File]);
+				}
+			});
+		}
+		catch (err) {
+			this.showError(`Unable to read directory "${mcUri.localPath}"`, err);
+		}
 
 		return result;
 	}
@@ -137,18 +142,25 @@ export class MCFS implements vscode.FileSystemProvider {
 
 		file?.setData(content);
 
-		let result = await this.mc.updateAsset(mcUri.mid, asset.getRawAsset());
+		try {
+			let result = await this.mc.updateAsset(mcUri.mid, asset.getRawAsset());
 
-		let savedAsset = await this.mc.getAssetById(mcUri.mid, asset.id);
+			let savedAsset = await this.mc.getAssetById(mcUri.mid, asset.id);
 
-		asset.parts.find(p => p.name == '__raw.readonly.json')?.setContent(
-			savedAsset.parts.find(p => p.name == '__raw.readonly.json')?.getContent() || ''
-		);
+			asset.parts.find(p => p.name == '__raw.readonly.json')?.setContent(
+				savedAsset.parts.find(p => p.name == '__raw.readonly.json')?.getContent() || ''
+			);
 
-		this._fireSoon({ type: vscode.FileChangeType.Changed, uri });
+			this._fireSoon({ type: vscode.FileChangeType.Changed, uri });
+		}
+		catch (err) {
+			this.showError(`Unable to write to file "${mcUri.localPath}"`, err);
+		}
 	}
 
-
+	private showError(message: string, err: any) {
+		vscode.window.showErrorMessage(message + ' Error details: ' + err.toString())
+	}
 
 
 
@@ -195,6 +207,12 @@ export class MCFS implements vscode.FileSystemProvider {
 	}
 
 	private getEntityType(uri: MCUri) {
+		let blocked: Array<string> = ['/pom.xml', '/node_modules'];
+
+		if (blocked.includes(uri.localPath.toLowerCase())) {
+			return vscode.FileType.Unknown;
+		}
+
 		if (uri.localPath.endsWith('.amp') || uri.localPath.endsWith('.ampscript')) {
 			return vscode.FileType.File;
 		}

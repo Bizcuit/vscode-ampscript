@@ -1,24 +1,19 @@
-# AMPScript syntax highlighting, code snippets and more
+# Direct connection to Marketing Cloud
+
+Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript** extension for Visual Studio Code. This version brings some really cool new features, that I would like 
+to share with you. 
+
+## Connect directly to your Marketing Cloud Account
+
+With a quick 5 minutes setup you'll be able to edit content blocks, emails and cloudpages without leaving Visual Studio Code. You can now avoid frequent copy-pasting and focus on your work. Have a look a quick demo below. To open Connection Manager: 
+* Press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) 
+* Start typing 'MCFS'
+* Find 'MCFS Connecton Manager' and then press Enter
+* You'll find detailed setup instuctions there
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs.gif)
 
-AMPScript is the language used to program emails, content blocks, webpages and script activities in the Salesforce Marketing Cloud. It is not a simple task to write code directly in the UI of MC. This extensions helps you solve this problem.
-
-This extension enables syntax highlighting for AMPScript, allows you to connect Visual Studio Code directly to your MC Account, has built-in documentation for all AMPScript functions and also adds code snippets for language elements and functions. Each snippet includes a detailed description of the function and its parameters. Snippets also show up when you hover a function name.
-
-With direct connection to MC you can: easily change content in MC without leaving your text editor, save time and avoid frequent copy-pasting. It also helps you to better control the content of your emails, content blocks and cloud pages by exposing additional content attributes that are not available in the UI of MC.
-
-### How to enable syntax highlighting
-
-You have two options on how to enable syntax highlighting:
-
-* Open a file that has an ".amp" or an ".ampscript" file extension
-* Manually set the language of the file to "AMPscript" (check the video below)
-
-![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_video_howto.gif)
-
-
-### How to connect to Marketing Cloud
+## How to connect to Marketing Cloud
 
 As of now, you **can only edit existing assets** (content blocks, emails, cloudpage and json message). Functionality that is not supported at the moment: create new asset, rename asset, move asset to a different folder, delete asset.
 
@@ -33,6 +28,8 @@ As of now, you **can only edit existing assets** (content blocks, emails, cloudp
 * To open Connection Manager next time press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) and start typing 'MCFS'. Find 'MCFS Connecton Manager' and then hit Enter
 
 Detailed instructions with screenshots are available directly in the Connection Manager. To open Connection Manager press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) and start typing 'MCFS'. Find 'MCFS Connecton Manager' and then hit Enter.
+
+
 
 ### How to edit Content Builder assets directly from Visual Studio Code
 
@@ -53,22 +50,3 @@ Each asset folder includes a readonly '__raw.readonly.json' file. This is an API
 * s01.b02.super.amp - super content of the second block in the first template stack
 * s02.b01.content.amp - content of the first block in the second template stack
 * s02.b01.super.amp - super content of the first block in the second template stack
-
-
-### How it looks and works
-
-#### Demo
-
-![Demo](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_video.gif)
-
-#### Hover snippets 
-
-![Hover snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_hoversnippets.jpg)
-
-#### Code snippets 
-
-![Function snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_snippets.png)
-
-#### Syntax highlighting
-
-![Syntax highlighting](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot.png)

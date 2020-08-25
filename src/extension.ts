@@ -64,6 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}, 5000);
 
 	enableSnippets(context.extensionPath);
+	showPromoPage(context.extensionPath);
 }
 
 function connect(connection: Connection): void {
@@ -148,4 +149,17 @@ function showPromoBanner(connectionManagerCallback: () => void) {
 				updateConfigField('notifications', 'dontShowConnectionManagerAlert', true);
 			}
 		});
+}
+
+function showPromoPage(externsionPath: string) {
+	const notifications = getConfig('notifications');
+
+	if (notifications["hasShownChangelog"]) {
+		return;
+	}
+
+	let uri = vscode.Uri.file(path.join(externsionPath, 'MCFSPROMO.md'))
+
+	updateConfigField('notifications', 'hasShownChangelog', true);
+	vscode.commands.executeCommand('markdown.showPreview', uri);
 }
