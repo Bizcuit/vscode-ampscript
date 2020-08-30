@@ -5,6 +5,7 @@ import * as path from 'path';
 
 import { MCFS } from './fileSystemProvider';
 import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } from './utils';
+import { group } from 'console';
 
 let isConfigUpdated = true;
 let isConnectionManagerOpened = false;
@@ -32,16 +33,15 @@ export function activate(context: vscode.ExtensionContext) {
 					break;
 
 				case 'CONNECT':
-					panel.close();
 					connect(message.content as Connection);
 					updateConfigField('notifications', 'hasConnectedToMC', true);
+					panel.close();
 					break;
 
 				case 'UPDATE':
 					connections = message.content;
 					mcfs.setConnections(connections);
 					updateConfig('connections', connections);
-					//updateConfigField('notifications', 'hasConnectedToMC', true);
 					vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
 					break;
 			}
@@ -59,12 +59,13 @@ export function activate(context: vscode.ExtensionContext) {
 
 	setTimeout(_ => {
 		if (!isConnectionManagerOpened) {
-			showPromoBanner(openConnectionManager);
+			if (!showPromoPage(context.extensionPath)) {
+				showPromoBanner(openConnectionManager);
+			}
 		}
 	}, 5000);
 
 	enableSnippets(context.extensionPath);
-	showPromoPage(context.extensionPath);
 }
 
 function connect(connection: Connection): void {
@@ -155,11 +156,13 @@ function showPromoPage(externsionPath: string) {
 	const notifications = getConfig('notifications');
 
 	if (notifications["hasShownChangelog"]) {
-		return;
+		return false;
 	}
 
 	let uri = vscode.Uri.file(path.join(externsionPath, 'MCFSPROMO.md'))
 
 	updateConfigField('notifications', 'hasShownChangelog', true);
 	vscode.commands.executeCommand('markdown.showPreview', uri);
+
+	return true;
 }
