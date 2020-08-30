@@ -3,6 +3,11 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [2.0.1] - 2020-08-30
+### Added
+- MCFS functionality (ability to connect directly to MC)
+- Hover function snippets
+
 ## [1.4.0] - 2020-02-25
 ### Added
 - Code snippets for all functions and some language elements 
