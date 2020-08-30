@@ -5,7 +5,6 @@ import * as path from 'path';
 
 import { MCFS } from './fileSystemProvider';
 import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } from './utils';
-import { group } from 'console';
 
 let isConfigUpdated = true;
 let isConnectionManagerOpened = false;
@@ -13,59 +12,64 @@ let isConnectionManagerOpened = false;
 export function activate(context: vscode.ExtensionContext) {
 	console.log('AMPscript extension activated...');
 
-	let connections = getConfig('connections');
+	try {
+		let connections = getConfig('connections');
 
-	const mcfs = new MCFS(connections);
+		const mcfs = new MCFS(connections);
 
-	const panel = new ConnectionManagerPanel();
+		const panel = new ConnectionManagerPanel();
 
-	const openConnectionManager = () => {
-		updateConfigField('notifications', 'hasOpenedConnectionManager', true);
+		const openConnectionManager = () => {
+			updateConfigField('notifications', 'hasOpenedConnectionManager', true);
 
-		panel.onMessageReceived = (message: any) => {
+			panel.onMessageReceived = (message: any) => {
 
-			switch (message?.action) {
-				case 'SEND_CONFIGS':
-					panel.postMessage({
-						action: 'SET_CONFIGS',
-						content: connections
-					} as ConnectionManagerMessage);
-					break;
+				switch (message?.action) {
+					case 'SEND_CONFIGS':
+						panel.postMessage({
+							action: 'SET_CONFIGS',
+							content: connections
+						} as ConnectionManagerMessage);
+						break;
 
-				case 'CONNECT':
-					connect(message.content as Connection);
-					updateConfigField('notifications', 'hasConnectedToMC', true);
-					panel.close();
-					break;
+					case 'CONNECT':
+						connect(message.content as Connection);
+						updateConfigField('notifications', 'hasConnectedToMC', true);
+						panel.close();
+						break;
 
-				case 'UPDATE':
-					connections = message.content;
-					mcfs.setConnections(connections);
-					updateConfig('connections', connections);
-					vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
-					break;
-			}
+					case 'UPDATE':
+						connections = message.content;
+						mcfs.setConnections(connections);
+						updateConfig('connections', connections);
+						vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
+						break;
+				}
+			};
+
+			panel.open(path.join(context.extensionPath, 'connection-manager'));
 		};
 
-		panel.open(path.join(context.extensionPath, 'connection-manager'));
-	};
+		context.subscriptions.push(vscode.workspace.registerFileSystemProvider('mcfs', mcfs, { isCaseSensitive: false }));
 
-	context.subscriptions.push(vscode.workspace.registerFileSystemProvider('mcfs', mcfs, { isCaseSensitive: false }));
+		context.subscriptions.push(vscode.commands.registerCommand('mcfs.open', _ => {
+			isConnectionManagerOpened = true;
+			openConnectionManager();
+		}));
 
-	context.subscriptions.push(vscode.commands.registerCommand('mcfs.open', _ => {
-		isConnectionManagerOpened = true;
-		openConnectionManager();
-	}));
-
-	setTimeout(_ => {
-		if (!isConnectionManagerOpened) {
-			if (!showPromoPage(context.extensionPath)) {
-				showPromoBanner(openConnectionManager);
+		setTimeout(_ => {
+			if (!isConnectionManagerOpened) {
+				if (!showPromoPage(context.extensionPath)) {
+					showPromoBanner(openConnectionManager);
+				}
 			}
-		}
-	}, 5000);
+		}, 5000);
 
-	enableSnippets(context.extensionPath);
+		enableSnippets(context.extensionPath);
+	}
+	catch (err) {
+		vscode.window.showErrorMessage('Error: ' + err.toString());
+	}
 }
 
 function connect(connection: Connection): void {
