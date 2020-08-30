@@ -1,7 +1,10 @@
 .gitignore
 *.gif
-screenshot_snippets.png
-screenshot.png
+images/screenshot_snippets.png
+images/screenshot.png
+images/screenshot_hoversnippets.jpg
+images/screenshot_snippets.png
+images/*.gif
 .vscode/**
 .vscode-test/**
 out/test/**
