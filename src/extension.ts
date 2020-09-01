@@ -9,7 +9,7 @@ import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } f
 let isConfigUpdated = true;
 let isConnectionManagerOpened = false;
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	console.log('AMPscript extension activated...');
 
 	try {
@@ -68,24 +68,28 @@ export function activate(context: vscode.ExtensionContext) {
 		enableSnippets(context.extensionPath);
 	}
 	catch (err) {
-		vscode.window.showErrorMessage('Error: ' + err.toString());
+		vscode.window.showErrorMessage('Ampscript extension error: ' + err.toString());
 	}
 }
 
 function connect(connection: Connection): void {
-	vscode.workspace.updateWorkspaceFolders(
-		vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, 0,
-		{
-			uri: vscode.Uri.parse('mcfs://' + connection.account_id),
-			name: `MCFS_${connection.account_id}: ${connection.name}`
-		}
-	);
+	let mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
+
+	if (undefined === vscode.workspace.getWorkspaceFolder(mcfsUri)) {
+		vscode.workspace.updateWorkspaceFolders(
+			vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders.length : 0, 0,
+			{
+				uri: mcfsUri,
+				name: `MCFS_${connection.account_id}: ${connection.name}`
+			}
+		);
+	}
 	vscode.window.showInformationMessage(`Connected to ${connection.account_id}. Open File Explorer...`);
 }
 
 function getConfig(section: string): any {
 	const config = vscode.workspace.getConfiguration('mcfs');
-	return config.get(section);
+	return config?.get(section);
 }
 
 function updateConfig(section: string, value: any) {
@@ -94,7 +98,7 @@ function updateConfig(section: string, value: any) {
 	let updateInterval = setInterval(_ => {
 		if (isConfigUpdated) {
 			isConfigUpdated = false;
-			config.update(section, value, true).then(_ => {
+			config?.update(section, value, true).then(_ => {
 				isConfigUpdated = true;
 				clearInterval(updateInterval);
 			});

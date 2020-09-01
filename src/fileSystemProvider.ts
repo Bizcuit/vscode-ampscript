@@ -21,7 +21,7 @@ export class MCFS implements vscode.FileSystemProvider {
 		let type: vscode.FileType = this.getEntityType(mcUri);
 
 		if (type == vscode.FileType.Unknown) {
-			throw vscode.FileSystemError.FileNotFound(uri);
+			throw vscode.FileSystemError.FileNotFound();
 		}
 
 		return {
@@ -42,7 +42,7 @@ export class MCFS implements vscode.FileSystemProvider {
 		let mcUri = new MCUri(uri.authority, uri.path);
 
 		if (this.getEntityType(mcUri) != vscode.FileType.Directory) {
-			throw vscode.FileSystemError.FileNotFound(uri);
+			throw vscode.FileSystemError.FileNotFound();
 		}
 
 		let result: [string, vscode.FileType][] = [];
@@ -113,7 +113,7 @@ export class MCFS implements vscode.FileSystemProvider {
 			}
 		}
 
-		throw vscode.FileSystemError.FileNotFound(uri);
+		throw vscode.FileSystemError.FileNotFound();
 	}
 
 	findAssetToWrite(uri: MCUri): MCAsset {
@@ -127,7 +127,7 @@ export class MCFS implements vscode.FileSystemProvider {
 			return (file as MCAsset);
 		}
 
-		throw vscode.FileSystemError.FileNotFound(uri.globalPath);
+		throw vscode.FileSystemError.FileNotFound();
 	}
 
 	async writeFile(uri: vscode.Uri, content: Uint8Array, options: { create: boolean, overwrite: boolean }): Promise<any> {
@@ -210,6 +210,10 @@ export class MCFS implements vscode.FileSystemProvider {
 		let blocked: Array<string> = ['/pom.xml', '/node_modules'];
 
 		if (blocked.includes(uri.localPath.toLowerCase())) {
+			return vscode.FileType.Unknown;
+		}
+
+		if (uri.localPath.startsWith('/.')) {
 			return vscode.FileType.Unknown;
 		}
 

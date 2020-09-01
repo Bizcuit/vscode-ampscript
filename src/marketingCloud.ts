@@ -446,7 +446,7 @@ export class MCAPI {
 	async getToken(mid: string): Promise<any> {
 
 		if (isNullOrUndefined(mid.match(/^\d+$/g))) {
-			throw new Error("incorrct MID");
+			throw new Error("Incorrect MID");
 		}
 
 		let now = new Date().getTime();
