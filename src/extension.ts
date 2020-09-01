@@ -167,7 +167,7 @@ function showPromoPage(externsionPath: string) {
 		return false;
 	}
 
-	let uri = vscode.Uri.file(path.join(externsionPath, 'MCFSPROMO.md'))
+	let uri = vscode.Uri.file(path.join(externsionPath, 'PROMO.md'))
 
 	updateConfigField('notifications', 'hasShownChangelog', true);
 	vscode.commands.executeCommand('markdown.showPreview', uri);

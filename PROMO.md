@@ -2,10 +2,14 @@
 
 Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript** extension for Visual Studio Code. This version brings some really cool new features, that I would like to share with you. 
 
+```diff
+!~ Don't forget to restart Visual Studio Code before using Connection Manager for the first time ~!
+```
+
 Share your ideas using [this form](https://docs.google.com/forms/d/e/1FAIpQLSc8NCJcqTxMIIJ5J1pWKTnPY2JewvTS8GU6b9-Lvhdze1N4RA/viewform?usp=sf_link), leave your feedback on the [Extension Page](https://marketplace.visualstudio.com/items?itemName=sergey-agadzhanov.AMPscript) or add a star on my [github repository](https://github.com/Bizcuit/vscode-ampscript).
 
 
-## Connect directly to your Marketing Cloud Account
+## 1. Connect directly to your Marketing Cloud Account
 
 With a quick 5 minutes setup you'll be able to edit content blocks, emails and cloudpages without leaving Visual Studio Code. You can now avoid frequent copy-pasting and focus on your work. Have a look a quick demo below. To open Connection Manager: 
 * Press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) 
@@ -15,7 +19,7 @@ With a quick 5 minutes setup you'll be able to edit content blocks, emails and c
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs.gif)
 
-## How to connect to Marketing Cloud
+## 1.a How to connect to Marketing Cloud
 
 As of now, you **can only edit existing assets** (content blocks, emails, cloudpage and json message). Functionality that is not supported at the moment: create new asset, rename asset, move asset to a different folder, delete asset.
 
@@ -33,7 +37,7 @@ Detailed instructions with screenshots are available directly in the Connection 
 
 
 
-### How to edit Content Builder assets directly from Visual Studio Code
+### 1.b How to edit Content Builder assets directly from Visual Studio Code
 
 Each asset is presented as a folder that starts with an 'Ω' symbol. You can easily distinguish different asset types based on the colored square that goes after 'Ω':
 * 🟥 - blocks
@@ -52,3 +56,9 @@ Each asset folder includes a readonly '__raw.readonly.json' file. This is an API
 * s01.b02.super.amp - super content of the second block in the first template stack
 * s02.b01.content.amp - content of the first block in the second template stack
 * s02.b01.super.amp - super content of the first block in the second template stack
+
+## 2. Hover code snippets
+
+Now you can mouse hover a function name in your code and a small popup window including documentation on this function will show up. Check a small example below
+
+![Hover snippets](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/screenshot_hoversnippets.jpg)
