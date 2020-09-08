@@ -3,6 +3,10 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [2.0.2] - 2020-09-08
+### Added
+- MCFS: fix incorrect path names on Windows
+
 ## [2.0.1] - 2020-08-30
 ### Added
 - MCFS functionality (ability to connect directly to MC)

@@ -14,8 +14,8 @@ export class MCUri {
 	constructor(mid: string, localPath: string) {
 		this.mid = mid;
 		this.name = path.basename(localPath);
-		this.localPath = localPath;
-		this.globalPath = path.join('/', this.mid, this.localPath);
+		this.localPath = localPath.replace(/\\/gi, '/');
+		this.globalPath = path.join('/', this.mid, this.localPath).replace(/\\/gi, '/');
 	}
 
 	public static getParent(uri: MCUri): MCUri {
