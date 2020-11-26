@@ -2,9 +2,9 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
-
-import { MCFS } from './fileSystemProvider';
+import { MCFS } from './mcfsFileSystemProvider';
 import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } from './utils';
+import { ConnectionManager } from './libs/connectionManager';
 
 let isConfigUpdated = true;
 let isConnectionManagerOpened = false;
@@ -14,8 +14,9 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	try {
 		let connections = getConfig('connections');
+		const mcfs = new MCFS();
 
-		const mcfs = new MCFS(connections);
+		ConnectionManager.getInstance().setConnections(connections);
 
 		const panel = new ConnectionManagerPanel();
 
@@ -40,7 +41,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 					case 'UPDATE':
 						connections = message.content;
-						mcfs.setConnections(connections);
+						ConnectionManager.getInstance().setConnections(connections);
 						updateConfig('connections', connections);
 						vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
 						break;
