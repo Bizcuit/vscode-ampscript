@@ -1,7 +1,7 @@
 import { Asset, AssetFile } from '../asset';
 import { FolderManagerUri } from '../folderManagerUri';
 import { FolderManager, Directory } from '../folderManager';
-import { APIException, ConnectionManager } from '../connectionManager';
+import { APIException, ConnectionController } from '../connectionController';
 import { config } from 'process';
 import { AxiosRequestConfig } from 'axios';
 
@@ -32,7 +32,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			}
 		};
 
-		const data: any = await ConnectionManager.getInstance().restRequest(directoryUri.connectionId, config);
+		const data: any = await ConnectionController.getInstance().restRequest(directoryUri.connectionId, config);
 
 		let assets: Array<Asset> = new Array<Asset>();
 
@@ -74,7 +74,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			data: assetData
 		};
 
-		const data: any = await ConnectionManager.getInstance().restRequest(asset.connectionId, config);
+		const data: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
 
 	async getAsset(assetUri: FolderManagerUri, forceRefresh = false): Promise<Asset> {
@@ -133,7 +133,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			}
 		};
 
-		const pDirectories = ConnectionManager.getInstance()
+		const pDirectories = ConnectionController.getInstance()
 			.restRequest(connectionId, config)
 			.then(response => {
 				let directories = new Array<Directory>();

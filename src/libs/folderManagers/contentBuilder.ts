@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { Asset, AssetFile } from '../asset';
-import { ConnectionManager } from '../connectionManager';
+import { ConnectionController } from '../connectionController';
 import { FolderManager, Directory } from '../folderManager';
 import { FolderManagerUri } from '../folderManagerUri';
 
@@ -75,7 +75,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 			data: assetData
 		};
 
-		const data: any = await ConnectionManager.getInstance().restRequest(asset.connectionId, config);
+		const data: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 		console.log('Asset updated', data);
 	}
 
@@ -214,7 +214,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 			}
 		};
 
-		const data: any = await ConnectionManager.getInstance().restRequest(uri.connectionId, config);
+		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 
 		let assets: Array<Asset> = new Array<Asset>();
 
@@ -358,7 +358,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 			}
 		};
 
-		const data: any = await ConnectionManager.getInstance().restRequest(uri.connectionId, config);
+		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 
 		if (directoryId !== 0) {
 			for (let d of data.items as Array<Directory>) {

@@ -13,7 +13,7 @@ interface Token {
 	expires: Date;
 }
 
-interface Connection {
+export interface Connection {
 	name: string;
 	account_id: string;
 	authBaseUri: string;
@@ -50,22 +50,22 @@ export class APIException extends Error {
 }
 
 
-export class ConnectionManager {
+export class ConnectionController {
 	private connections: Map<string, Connection>;
 	private tokens: Map<string, Promise<Token>>;
 
-	private static instance: ConnectionManager | null = null;
+	private static instance: ConnectionController | null = null;
 
 	constructor() {
 		this.connections = new Map<string, Connection>();
 		this.tokens = new Map<string, Promise<Token>>();
 	}
 
-	static getInstance(): ConnectionManager {
-		if (ConnectionManager.instance === null) {
-			ConnectionManager.instance = new ConnectionManager();
+	static getInstance(): ConnectionController {
+		if (ConnectionController.instance === null) {
+			ConnectionController.instance = new ConnectionController();
 		}
-		return ConnectionManager.instance;
+		return ConnectionController.instance;
 	}
 
 	setConnections(connections: Array<Connection>) {
