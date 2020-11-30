@@ -1,21 +1,31 @@
 'use strict';
 
+import { getMaxListeners } from "process";
+
+export type LazyContentDelegate = (() => Promise<string>) | undefined;
+
 export class AssetFile {
 	name: string;
 	content: string;
 	path: string;
+	private getLazyContent: LazyContentDelegate;
 
-	constructor(name: string, content: string, path: string) {
+	constructor(name: string, content: string, path: string, getLazyContent: LazyContentDelegate = undefined) {
 		this.name = name;
 		this.content = content;
 		this.path = path;
+		this.getLazyContent = getLazyContent;
 	}
 
 	write(data: Uint8Array): void {
 		this.content = new TextDecoder("utf-8").decode(data);
 	}
 
-	read(): Uint8Array {
+	async read(): Promise<Uint8Array> {
+		if (this.content === '' && this.getLazyContent !== undefined) {
+			this.content = await this.getLazyContent();
+		}
+
 		return new TextEncoder().encode(this.content);
 	}
 }

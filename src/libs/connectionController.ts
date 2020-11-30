@@ -1,7 +1,7 @@
 'use strict';
 
 import axios, { AxiosRequestConfig } from 'axios';
-import { basename } from 'path';
+import * as xml2js from 'xml2js';
 
 interface Token {
 	rest_instance_url: string;
@@ -49,6 +49,15 @@ export class APIException extends Error {
 	}
 }
 
+export enum SoapOperation {
+	RETRIEVE = "Retrieve"
+}
+
+export interface SoapRequestConfig {
+	operation: SoapOperation;
+	transformResponse?: (responseBody: any) => any;
+	body: any;
+}
 
 export class ConnectionController {
 	private connections: Map<string, Connection>;
@@ -149,4 +158,58 @@ export class ConnectionController {
 			throw (ex instanceof APIException ? ex : new APIException('REST API failed', ex.message, ex));
 		}
 	}
+
+	async soapRequest(connectionId: string, config: SoapRequestConfig): Promise<any> {
+		try {
+			const token: Token = await this.getToken(connectionId);
+			const xmlBuilder = new xml2js.Builder();
+
+			const body: any = {
+				Envelope: {
+					$: {
+						"xmlns": "http://schemas.xmlsoap.org/soap/envelope/",
+						"xmlns:xsd": "http://www.w3.org/2001/XMLSchema",
+						"xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"
+					},
+					Header: {
+						fueloauth: {
+							$: {
+								"xmlns": "http://exacttarget.com"
+							},
+							_: token.access_token
+						}
+					},
+					Body: config.body
+				}
+			};
+
+			const axiosConfig: AxiosRequestConfig = {
+				baseURL: token.soap_instance_url,
+				url: '/Service.asmx',
+				method: 'post',
+				data: xmlBuilder.buildObject(body),
+				headers: {
+					'Content-Type': 'text/xml',
+					'SOAPAction': config.operation
+				},
+				transformResponse: [
+					async function (data): Promise<any> {
+						const parser = new xml2js.Parser();
+						return parser.parseStringPromise(data).then(result => {
+							const body = result["soap:Envelope"]["soap:Body"];
+							return config.transformResponse === undefined ? body : config.transformResponse(body);
+						});
+					}
+				]
+			};
+
+			const response = await axios(axiosConfig);
+			const result = await response.data;
+			return result;
+		}
+		catch (ex) {
+			throw (ex instanceof APIException ? ex : new APIException('SOAP API failed', ex.message, ex));
+		}
+	}
+
 }

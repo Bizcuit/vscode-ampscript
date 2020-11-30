@@ -107,10 +107,14 @@
 	"icon": "images/logo.png",
 	"devDependencies": {
 		"@types/node": "^7.0.43",
-		"typescript": "^3.5.1",
-		"@types/vscode": "^1.32.0"
+		"@types/papaparse": "^5.2.4",
+		"@types/vscode": "^1.32.0",
+		"@types/xml2js": "^0.4.7",
+		"typescript": "^3.5.1"
 	},
 	"dependencies": {
-		"axios": "^0.19.2"
+		"axios": "^0.19.2",
+		"papaparse": "^5.3.0",
+		"xml2js": "^0.4.23"
 	}
 }

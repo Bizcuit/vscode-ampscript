@@ -29,12 +29,6 @@ export abstract class FolderManager {
 	abstract getAssetsInDirectory(directoryUri: FolderManagerUri): Promise<Array<Asset>>;
 
 	/**
-	 * Returns a list of files, extracted from an asset
-	 * @param assetUri 
-	 */
-	abstract getAssetFiles(assetUri: FolderManagerUri): Promise<Array<AssetFile>>;
-
-	/**
 	 * Saves the content of the file back to the asset object
 	 * @param asset 
 	 * @param file 
@@ -53,6 +47,15 @@ export abstract class FolderManager {
 	 * @param asset 
 	 */
 	abstract saveAsset(asset: Asset): Promise<void>;
+
+	/**
+	 * Returns a list of files, extracted from an asset
+	 * @param assetUri 
+	 */
+	async getAssetFiles(assetUri: FolderManagerUri): Promise<Array<AssetFile>> {
+		const asset: Asset = await this.getAsset(assetUri, false);
+		return asset?.files || [];
+	}
 
 	/**
 	 * Each asset is represented as a folder. This function returns the name of the asset directory based on the original asset name.

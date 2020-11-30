@@ -60,11 +60,6 @@ export class SqlQueriesFolderManager extends FolderManager {
 		return subdirectories.map(d => d.name);
 	}
 
-	async getAssetFiles(assetUri: FolderManagerUri): Promise<Array<AssetFile>> {
-		const asset = this.assetsCache.get(assetUri.globalPath);
-		return asset?.files || [];
-	}
-
 	async saveAsset(asset: Asset): Promise<void> {
 		const assetData: any = JSON.parse(asset.content);
 

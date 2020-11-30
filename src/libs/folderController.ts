@@ -5,6 +5,7 @@ import { FolderManagerUri } from './folderManagerUri';
 import { Asset, AssetFile } from './asset';
 import { ContentBuilderFolderManager, AssetSubtype } from './folderManagers/contentBuilder';
 import { SqlQueriesFolderManager } from './folderManagers/sqlQueries';
+import { DataextensionFolderManager } from './folderManagers/dataextensions';
 
 export class FolderController {
 	private managers: Map<string, FolderManager>;
@@ -28,6 +29,7 @@ export class FolderController {
 		], false));
 		this.addManager(new ContentBuilderFolderManager("Cloud Pages", [AssetSubtype.WEBPAGE], true));
 		this.addManager(new SqlQueriesFolderManager());
+		this.addManager(new DataextensionFolderManager("Dataextensions", false));
 	}
 
 	static getInstance(): FolderController {
@@ -110,6 +112,10 @@ export class FolderController {
 
 		if (parent == undefined || !parent.isAsset || manager == undefined) {
 			throw new Error(`Can't read file ${uri.globalPath}`);
+		}
+
+		if (uri.name.includes('.readonly.')) {
+			throw new Error(`You can't change a readonly file ${uri.localPath}`);
 		}
 
 		const asset = await manager.getAsset(parent);
