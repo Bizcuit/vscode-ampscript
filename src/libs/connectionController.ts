@@ -2,6 +2,7 @@
 
 import axios, { AxiosRequestConfig } from 'axios';
 import * as xml2js from 'xml2js';
+import { Utils } from './utils';
 
 interface Token {
 	rest_instance_url: string;
@@ -50,7 +51,8 @@ export class APIException extends Error {
 }
 
 export enum SoapOperation {
-	RETRIEVE = "Retrieve"
+	RETRIEVE = "Retrieve",
+	UPDATE = "Update"
 }
 
 export interface SoapRequestConfig {
@@ -204,7 +206,9 @@ export class ConnectionController {
 			};
 
 			const response = await axios(axiosConfig);
+
 			const result = await response.data;
+
 			return result;
 		}
 		catch (ex) {

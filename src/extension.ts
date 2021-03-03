@@ -6,6 +6,9 @@ import { MCFS } from './mcfsFileSystemProvider';
 import { Connection } from './libs/connectionController';
 import { Utils, WebPanel, WebPanelMessage } from './libs/utils';
 import { ConnectionController } from './libs/connectionController';
+import { FolderManagerUri } from './libs/folderManagerUri';
+import { DataextensionFolderManager } from './libs/folderManagers/dataextensions';
+import { FolderController } from './libs/folderController';
 
 let isConnectionManagerOpened = false;
 
@@ -58,6 +61,33 @@ export async function activate(context: vscode.ExtensionContext) {
 			isConnectionManagerOpened = true;
 			openConnectionManager();
 		}));
+
+		FolderController.getInstance().customActions.forEach((a) => {
+			context.subscriptions.push(vscode.commands.registerTextEditorCommand(a.command, async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
+				const uri = textEditor?.document?.uri;
+
+				if (uri === undefined) return;
+
+				const fmUri = new FolderManagerUri(uri);
+				const currentContent = textEditor.document.getText();
+
+				vscode.window.withProgress({
+					location: vscode.ProgressLocation.Notification,
+					title: 'Running Query',
+					cancellable: true
+				}, async (progress, token) => {
+					const result = await a.callback(fmUri, currentContent);
+
+					if (currentContent !== result) {
+						textEditor.edit((editBuilder) => {
+							editBuilder.replace(new vscode.Selection(0, 0, textEditor.document.lineCount, 0), result);
+						});
+					}
+
+					return;
+				});
+			}));
+		});
 
 		setTimeout(_ => {
 			if (!isConnectionManagerOpened) {

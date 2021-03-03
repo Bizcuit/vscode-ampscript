@@ -94,27 +94,6 @@ export class Utils {
 		data[field] = value;
 		this.setConfig(section, data);
 	}
-
-	getPropertyFromSoapJSON(object: any, path: string): any {
-		let result: any = object;
-		const chunks: Array<string> = path.split('.');
-
-		for (let c of chunks) {
-			if (result?.[c] !== undefined && Array.isArray(result[c])) {
-				if (result[c]?.length === 1) {
-					result = result?.[c]?.[0];
-				}
-				else {
-					result = result?.[c];
-				}
-			}
-			else {
-				result = result?.[0]?.[c];
-			}
-		}
-
-		return result;
-	}
 }
 
 export class WebPanelMessage {

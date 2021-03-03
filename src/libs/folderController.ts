@@ -1,6 +1,6 @@
 'use strict';
 
-import { FolderManager } from './folderManager';
+import { CustomAction, FolderManager } from './folderManager';
 import { FolderManagerUri } from './folderManagerUri';
 import { Asset, AssetFile } from './asset';
 import { ContentBuilderFolderManager, AssetSubtype } from './folderManagers/contentBuilder';
@@ -8,9 +8,10 @@ import { SqlQueriesFolderManager } from './folderManagers/sqlQueries';
 import { DataextensionFolderManager } from './folderManagers/dataextensions';
 
 export class FolderController {
+	private static instance: FolderController | null = null;
 	private managers: Map<string, FolderManager>;
 	private fileExensions: Set<string>;
-	private static instance: FolderController | null = null;
+	public customActions: Array<CustomAction> = []; 
 
 	constructor() {
 		this.managers = new Map<string, FolderManager>();
@@ -50,6 +51,8 @@ export class FolderController {
 		manager.getFileExtensions().forEach(ext => {
 			this.fileExensions.add(ext.toLowerCase());
 		});
+
+		this.customActions.push(...manager.customActions);
 	}
 
 	hasManager(uri: FolderManagerUri): boolean {
@@ -59,6 +62,7 @@ export class FolderController {
 	hasFileExtension(extension: string): boolean {
 		return this.fileExensions.has(extension.toLowerCase());
 	}
+
 
 	async getSubdirectories(uri: FolderManagerUri): Promise<Array<string>> {
 		if (uri.mountPath === '') {

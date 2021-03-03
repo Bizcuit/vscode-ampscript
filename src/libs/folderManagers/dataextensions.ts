@@ -1,10 +1,13 @@
 
 import { Asset, AssetFile, LazyContentDelegate } from '../asset';
 import { ConnectionController, SoapOperation, SoapRequestConfig } from '../connectionController';
-import { FolderManager, Directory } from '../folderManager';
+import { FolderManager, Directory, CustomAction } from '../folderManager';
 import { FolderManagerUri } from '../folderManagerUri';
 import { Utils } from '../utils';
 import * as Papa from 'papaparse';
+import { SoapFilterExpression, SoapUtils } from '../soapUtils';
+import { normalize } from 'xml2js/lib/processors';
+import * as vscode from 'vscode';
 
 interface DataextensionColumn {
 	Name: string;
@@ -15,21 +18,27 @@ interface DataextensionColumn {
 	IsRequired: string;
 	IsPrimaryKey: string;
 	DefaultValue: string | undefined;
-	Ordinal: string;
+	Ordinal: number;
 }
 
 export class DataextensionFolderManager extends FolderManager {
 	readonly mountFolderName: string;
 	readonly ignoreDirectories: boolean;
 	private directoriesCache: Map<string, number>;
-	private assetsCache: Map<string, Asset>;
+	private filterString: string = "";
 
 	constructor(mountFolderName: string, ignoreDirectories: boolean) {
 		super();
+
 		this.mountFolderName = mountFolderName;
 		this.ignoreDirectories = ignoreDirectories;
 		this.directoriesCache = new Map<string, number>();
-		this.assetsCache = new Map<string, Asset>();
+
+		this.customActions.push({
+			command: "mcfs.dataextension.filter",
+			waitLabel: "Filtering a Dataextension",
+			callback: (fmUri: FolderManagerUri, content: string): Promise<string> => this.customActionFilter(fmUri, content)
+		} as CustomAction);
 	}
 
 	/* Interface implementation */
@@ -57,37 +66,31 @@ export class DataextensionFolderManager extends FolderManager {
 
 		let assets = await ConnectionController.getInstance().soapRequest(directoryUri.connectionId, {
 			operation: SoapOperation.RETRIEVE,
-			body: {
-				RetrieveRequestMsg: {
-					$: { "xmlns": "http://exacttarget.com/wsdl/partnerAPI" },
-					RetrieveRequest: {
-						ObjectType: "DataExtension",
-						Properties: ["Name", "CustomerKey"],
-						Filter: {
-							$: { "xsi:type": "SimpleFilterPart" },
-							Property: "CategoryID",
-							SimpleOperator: "equals",
-							Value: directoryId
-						}
-					}
+			body: SoapUtils.createRetrieveBody(
+				"DataExtension",
+				["Name", "CustomerKey"],
+				{
+					Property: "CategoryID",
+					SimpleOperator: "equals",
+					Value: directoryId
 				}
-			},
+			),
 			transformResponse: (body) => {
-				return Utils.getInstance().getPropertyFromSoapJSON(body, "RetrieveResponseMsg.Results")?.map((e: any) => {
-					const name: string = Utils.getInstance().getPropertyFromSoapJSON(e, "Name");
-					const customerKey: string = Utils.getInstance().getPropertyFromSoapJSON(e, "CustomerKey");
+				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
+					const name: string = SoapUtils.getStrProp(e, "Name");
+					const customerKey: string = SoapUtils.getStrProp(e, "CustomerKey");
 
-					const asset: Asset = new Asset(
+					return new Asset(
 						name,
 						this.getAssetDirectoryName(name, ''),
 						JSON.stringify(e, null, 2),
 						directoryUri.connectionId,
 						[
-							new AssetFile("rows.readonly.csv", "", "", async () => {
+							new AssetFile("rows.csv", "", "", async () => {
 								const rows = await this.getDataextensionRows(directoryUri.connectionId, customerKey);
-								return Papa.unparse(rows);
+								return rows !== undefined ? Papa.unparse(rows) : "";
 							}),
-							new AssetFile("rows.readonly.json", "", "", async () => {
+							new AssetFile("rows.json", "", "", async () => {
 								const rows = await this.getDataextensionRows(directoryUri.connectionId, customerKey);
 								return JSON.stringify(rows, null, 2);
 							}),
@@ -97,7 +100,6 @@ export class DataextensionFolderManager extends FolderManager {
 							})
 						]
 					);
-					return asset;
 				});
 			}
 		} as SoapRequestConfig);
@@ -111,49 +113,109 @@ export class DataextensionFolderManager extends FolderManager {
 		return assets;
 	}
 
-	async getAsset(assetUri: FolderManagerUri, forceRefresh?: boolean): Promise<Asset> {
-		const asset = this.assetsCache.get(assetUri.globalPath);
+	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
+		const data = JSON.parse(asset.content);
+		const customerKey = data?.CustomerKey?.[0];
 
-		if (asset !== undefined && !forceRefresh) {
-			return asset;
+		if (file.name === "rows.csv") {
+			const rows = Papa.parse(file.content, {
+				header: true
+			}).data;
+			await this.upsertDataextensionRows(asset.connectionId, customerKey, rows);
 		}
 
-		throw new Error(`Asset ${assetUri.globalPath} not found`);
-	}
-
-	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
-		throw new Error('Method not implemented.');
+		else if (file.name === "rows.json") {
+			const rows = JSON.parse(file.content);
+			await this.upsertDataextensionRows(asset.connectionId, customerKey, rows);
+		}
 	}
 
 	async saveAsset(asset: Asset): Promise<void> {
-		throw new Error('Method not implemented.');
+		return;
 	}
+
 
 
 	/* Support methods */
 
-	private async getDataextensionRows(connectionId: string, customerKey: string): Promise<Array<any>> {
+	public async customActionFilter(fmUri: FolderManagerUri, content: string): Promise<string> {
+		const assetUri = fmUri.isAsset ? fmUri : fmUri.parent;
+
+		if (assetUri === undefined) {
+			return "";
+		}
+
+		const filterString = await vscode.window.showInputBox({
+			value: this.filterString,
+			ignoreFocusOut: true,
+			placeHolder: "Your filter query string"
+		});
+
+		this.filterString = filterString || "";
+
+		const filter = new SoapFilterExpression(filterString as string).filter;
+		const asset = await this.getAsset(assetUri, false);
+		const customerKey = SoapUtils.getStrProp(JSON.parse(asset.content), "CustomerKey");
+		const rows = await this.getDataextensionRows(assetUri.connectionId, customerKey, filter);
+
+		if (fmUri.name.endsWith(".csv")) {
+			return rows !== undefined ? Papa.unparse(rows) : ""
+		}
+
+		return JSON.stringify(rows, null, 2);
+	}
+
+	private async upsertDataextensionRows(connectionId: string, customerKey: string, rows: Array<any>) {
+		const soapRows: Array<any> = rows.map(row => {
+			const o = {
+				CustomerKey: customerKey,
+				Properties: {
+					Property: new Array<any>()
+				}
+			};
+
+			for (let col in row) {
+				if (col.toLowerCase() !== '_customobjectkey') {
+					o.Properties.Property.push({
+						Name: col,
+						Value: row[col]
+					});
+				}
+			}
+
+			return o;
+		});
+
+		const result = await ConnectionController.getInstance().soapRequest(connectionId, {
+			operation: SoapOperation.UPDATE,
+			body: SoapUtils.createUpdateBody(
+				"DataExtensionObject",
+				soapRows
+			)
+		});
+
+		return result;
+	}
+
+	private async getDataextensionRows(connectionId: string, customerKey: string, filter?: any): Promise<Array<any>> {
 		const columns = await this.getDataextensionColumns(connectionId, customerKey);
-		const columnNames: Array<string> = columns.map(c => c.Name.trim());
-		columnNames.unshift("_CustomObjectKey");
 
 		const rows = await ConnectionController.getInstance().soapRequest(connectionId, {
 			operation: SoapOperation.RETRIEVE,
-			body: {
-				RetrieveRequestMsg: {
-					$: { "xmlns": "http://exacttarget.com/wsdl/partnerAPI" },
-					RetrieveRequest: {
-						ObjectType: `DataExtensionObject[${customerKey}]`,
-						Properties: columnNames
-					}
-				}
-			},
+			body: SoapUtils.createRetrieveBody(
+				`DataExtensionObject[${customerKey}]`,
+				[
+					"_CustomObjectKey",
+					...columns.map(c => c.Name.trim())
+				],
+				filter
+			),
 			transformResponse: (body) => {
-				return Utils.getInstance().getPropertyFromSoapJSON(body, "RetrieveResponseMsg.Results")?.map((e: any) => {
+				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
 					let row: any = {};
 
-					Utils.getInstance().getPropertyFromSoapJSON(e, "Properties.Property")?.forEach((c: any) => {
-						row[Utils.getInstance().getPropertyFromSoapJSON(c, "Name")] = Utils.getInstance().getPropertyFromSoapJSON(c, "Value");
+					SoapUtils.getArrProp(e, "Properties.Property").forEach((c: any) => {
+						row[SoapUtils.getStrProp(c, "Name")] = SoapUtils.getStrProp(c, "Value");
 					});
 
 					return row;
@@ -167,49 +229,43 @@ export class DataextensionFolderManager extends FolderManager {
 	private async getDataextensionColumns(connectionId: string, customerKey: string): Promise<Array<DataextensionColumn>> {
 		const columns = await ConnectionController.getInstance().soapRequest(connectionId, {
 			operation: SoapOperation.RETRIEVE,
-			body: {
-				RetrieveRequestMsg: {
-					$: { "xmlns": "http://exacttarget.com/wsdl/partnerAPI" },
-					RetrieveRequest: {
-						ObjectType: "DataExtensionField",
-						Properties: [
-							"Name",
-							"FieldType",
-							"ObjectID",
-							"MaxLength",
-							"Scale",
-							"IsRequired",
-							"IsPrimaryKey",
-							"DefaultValue",
-							"Ordinal"
-						],
-						Filter: {
-							$: { "xsi:type": "SimpleFilterPart" },
-							Property: "DataExtension.CustomerKey",
-							SimpleOperator: "equals",
-							Value: customerKey
-						}
-					}
+			body: SoapUtils.createRetrieveBody(
+				"DataExtensionField",
+				[
+					"Name",
+					"FieldType",
+					"ObjectID",
+					"MaxLength",
+					"Scale",
+					"IsRequired",
+					"IsPrimaryKey",
+					"DefaultValue",
+					"Ordinal"
+				],
+				{
+					Property: "DataExtension.CustomerKey",
+					SimpleOperator: "equals",
+					Value: customerKey
 				}
-			},
+			),
 			transformResponse: (body) => {
-				return Utils.getInstance().getPropertyFromSoapJSON(body, "RetrieveResponseMsg.Results")?.map((e: any) => {
+				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
 					return {
-						Name: Utils.getInstance().getPropertyFromSoapJSON(e, "Name"),
-						FieldType: Utils.getInstance().getPropertyFromSoapJSON(e, "FieldType"),
-						ObjectID: Utils.getInstance().getPropertyFromSoapJSON(e, "ObjectID"),
-						MaxLength: Utils.getInstance().getPropertyFromSoapJSON(e, "MaxLength"),
-						Scale: Utils.getInstance().getPropertyFromSoapJSON(e, "Scale"),
-						IsRequired: Utils.getInstance().getPropertyFromSoapJSON(e, "IsRequired"),
-						IsPrimaryKey: Utils.getInstance().getPropertyFromSoapJSON(e, "IsPrimaryKey"),
-						DefaultValue: Utils.getInstance().getPropertyFromSoapJSON(e, "DefaultValue"),
-						Ordinal: Utils.getInstance().getPropertyFromSoapJSON(e, "Ordinal")
+						Name: SoapUtils.getStrProp(e, "Name"),
+						FieldType: SoapUtils.getStrProp(e, "FieldType"),
+						ObjectID: SoapUtils.getStrProp(e, "ObjectID"),
+						MaxLength: SoapUtils.getStrProp(e, "MaxLength"),
+						Scale: SoapUtils.getStrProp(e, "Scale"),
+						IsRequired: SoapUtils.getStrProp(e, "IsRequired"),
+						IsPrimaryKey: SoapUtils.getStrProp(e, "IsPrimaryKey"),
+						DefaultValue: SoapUtils.getStrProp(e, "DefaultValue"),
+						Ordinal: parseInt(SoapUtils.getStrProp(e, "Ordinal") || "0")
 					} as DataextensionColumn;
 				});
 			}
 		} as SoapRequestConfig);
 
-		return columns;
+		return columns.sort((a: DataextensionColumn, b: DataextensionColumn) => { return a.Ordinal - b.Ordinal });
 	}
 
 	private async getDirectoryId(uri: FolderManagerUri): Promise<number> {
@@ -238,37 +294,29 @@ export class DataextensionFolderManager extends FolderManager {
 	private async getSubdirectoriesByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Directory>> {
 		let data = await ConnectionController.getInstance().soapRequest(uri.connectionId, {
 			operation: SoapOperation.RETRIEVE,
-			body: {
-				RetrieveRequestMsg: {
-					$: { "xmlns": "http://exacttarget.com/wsdl/partnerAPI" },
-					RetrieveRequest: {
-						ObjectType: "DataFolder",
-						Properties: ["ID", "Name", "ParentFolder.ID"],
-						Filter: {
-							$: { "xsi:type": "ComplexFilterPart" },
-							LeftOperand: {
-								$: { "xsi:type": "SimpleFilterPart" },
-								Property: "ParentFolder.ID",
-								SimpleOperator: "equals",
-								Value: directoryId
-							},
-							LogicalOperator: "AND",
-							RightOperand: {
-								$: { "xsi:type": "SimpleFilterPart" },
-								Property: "ContentType",
-								SimpleOperator: "equals",
-								Value: "dataextension"
-							}
-						}
+			body: SoapUtils.createRetrieveBody(
+				"DataFolder",
+				["ID", "Name", "ParentFolder.ID"],
+				{
+					LeftOperand: {
+						Property: "ParentFolder.ID",
+						SimpleOperator: "equals",
+						Value: directoryId
+					},
+					LogicalOperator: "AND",
+					RightOperand: {
+						Property: "ContentType",
+						SimpleOperator: "equals",
+						Value: "dataextension"
 					}
 				}
-			},
+			),
 			transformResponse: (body) => {
-				return Utils.getInstance().getPropertyFromSoapJSON(body, "RetrieveResponseMsg.Results")?.map((e: any) => {
+				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
 					return {
-						id: Utils.getInstance().getPropertyFromSoapJSON(e, "ID"),
-						parentId: Utils.getInstance().getPropertyFromSoapJSON(e, "ParentFolder.ID"),
-						name: Utils.getInstance().getPropertyFromSoapJSON(e, "Name")
+						id: parseInt(SoapUtils.getStrProp(e, "ID")),
+						parentId: parseInt(SoapUtils.getStrProp(e, "ParentFolder.ID")),
+						name: SoapUtils.getStrProp(e, "Name")
 					} as Directory
 				});
 			}

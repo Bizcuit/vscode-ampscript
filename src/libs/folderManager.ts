@@ -9,11 +9,22 @@ export interface Directory {
 	name: string;
 }
 
+export interface CustomAction {
+	command: string;
+	waitLabel: string;
+	callback: (fmUri: FolderManagerUri, content: string) => Promise<string>;
+}
+
 export abstract class FolderManager {
 	readonly mountFolderName: string;
+	protected assetsCache: Map<string, Asset>;
+	
+	public customActions: Array<CustomAction>;
 
 	constructor() {
 		this.mountFolderName = this.constructor.name;
+		this.assetsCache = new Map<string, Asset>();
+		this.customActions = [];
 	}
 
 	/**
@@ -23,7 +34,7 @@ export abstract class FolderManager {
 	abstract getSubdirectories(directoryUri: FolderManagerUri): Promise<Array<string>>;
 
 	/**
-	 * Returns a list of assets in the provided directory uri
+	 * Returns a list of assets in the provided directory uri. Should save all retrived assets to the assetsCache property
 	 * @param directoryUri 
 	 */
 	abstract getAssetsInDirectory(directoryUri: FolderManagerUri): Promise<Array<Asset>>;
@@ -40,7 +51,23 @@ export abstract class FolderManager {
 	 * @param assetUri - uri of an asset to return
 	 * @param forceRefresh - if TRUE ignores cache and reloads an asset from the backend
 	 */
-	abstract getAsset(assetUri: FolderManagerUri, forceRefresh?: boolean): Promise<Asset>;
+	async getAsset(assetUri: FolderManagerUri, forceRefresh?: boolean): Promise<Asset> {
+		const directoryUri = assetUri.parent;
+
+		let asset = this.assetsCache.get(assetUri.globalPath);
+
+		// If assets have not been loaded yet, or a refresh was requested
+		if (directoryUri !== undefined && (asset === undefined || forceRefresh === true)) {
+			await this.getAssetsInDirectory(directoryUri);
+			asset = this.assetsCache.get(assetUri.globalPath);
+		}
+
+		if (asset !== undefined) {
+			return asset;
+		}
+
+		throw new Error(`Asset ${assetUri.globalPath} not found`);
+	}
 
 	/**
 	 * Save asset back to the backend

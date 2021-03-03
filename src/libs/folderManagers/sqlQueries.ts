@@ -9,12 +9,10 @@ import { AxiosRequestConfig } from 'axios';
 export class SqlQueriesFolderManager extends FolderManager {
 	readonly mountFolderName: string = "SQL Queries";
 	private directoriesCache: Map<string, Promise<Array<Directory>>>;
-	private assetsCache: Map<string, Asset>;
 
 	constructor() {
 		super();
 		this.directoriesCache = new Map<string, Promise<Array<Directory>>>();
-		this.assetsCache = new Map<string, Asset>();
 	}
 
 	/* Interface implementation */
@@ -70,16 +68,6 @@ export class SqlQueriesFolderManager extends FolderManager {
 		};
 
 		const data: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
-	}
-
-	async getAsset(assetUri: FolderManagerUri, forceRefresh = false): Promise<Asset> {
-		const asset = this.assetsCache.get(assetUri.globalPath);
-
-		if (asset !== undefined && !forceRefresh) {
-			return asset;
-		}
-
-		throw new Error(`Asset ${assetUri.globalPath} not found`);
 	}
 
 	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {

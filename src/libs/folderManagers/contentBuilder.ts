@@ -32,14 +32,12 @@ export class ContentBuilderFolderManager extends FolderManager {
 	readonly mountFolderName: string;
 
 	private directoriesCache: Map<string, number>;
-	private assetsCache: Map<string, Asset>;
 	private readonly assetSubtypesFilter: Array<AssetSubtype>;
 	private readonly readOnlyRootFolder: boolean;
 
 	constructor(mountFolderName: string, assetSubtypesFilter: Array<AssetSubtype>, readOnlyRootFolder: boolean) {
 		super();
 		this.directoriesCache = new Map<string, number>();
-		this.assetsCache = new Map<string, Asset>();
 		this.mountFolderName = mountFolderName;
 		this.assetSubtypesFilter = assetSubtypesFilter;
 		this.readOnlyRootFolder = readOnlyRootFolder;
@@ -74,15 +72,6 @@ export class ContentBuilderFolderManager extends FolderManager {
 		console.log('Asset updated', data);
 	}
 
-	async getAsset(assetUri: FolderManagerUri, forceRefresh = false): Promise<Asset> {
-		const asset = this.assetsCache.get(assetUri.globalPath);
-
-		if (asset !== undefined && !forceRefresh) {
-			return asset;
-		}
-
-		throw new Error(`Asset ${assetUri.globalPath} not found`);
-	}
 
 	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
 		let assetData: any = JSON.parse(asset.content);
