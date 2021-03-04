@@ -12,7 +12,7 @@ export interface Directory {
 export interface CustomAction {
 	command: string;
 	waitLabel: string;
-	callback: (fmUri: FolderManagerUri, content: string) => Promise<string>;
+	callback: (fmUri: FolderManagerUri, content: string) => Promise<string | undefined>;
 }
 
 export abstract class FolderManager {

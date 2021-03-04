@@ -94,6 +94,12 @@ export class Utils {
 		data[field] = value;
 		this.setConfig(section, data);
 	}
+
+	async delay(time: number) {
+		return new Promise((resolve) => {
+			setTimeout(() => resolve(time), time);
+		});
+	}
 }
 
 export class WebPanelMessage {

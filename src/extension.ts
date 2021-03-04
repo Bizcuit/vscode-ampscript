@@ -78,7 +78,7 @@ export async function activate(context: vscode.ExtensionContext) {
 				}, async (progress, token) => {
 					const result = await a.callback(fmUri, currentContent);
 
-					if (currentContent !== result) {
+					if (result !== undefined && currentContent !== result) {
 						textEditor.edit((editBuilder) => {
 							editBuilder.replace(new vscode.Selection(0, 0, textEditor.document.lineCount, 0), result);
 						});

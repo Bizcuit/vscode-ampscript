@@ -37,7 +37,7 @@ export class DataextensionFolderManager extends FolderManager {
 		this.customActions.push({
 			command: "mcfs.dataextension.filter",
 			waitLabel: "Filtering a Dataextension",
-			callback: (fmUri: FolderManagerUri, content: string): Promise<string> => this.customActionFilter(fmUri, content)
+			callback: (fmUri: FolderManagerUri, content: string): Promise<string | undefined> => this.customActionFilter(fmUri, content)
 		} as CustomAction);
 	}
 
@@ -138,7 +138,7 @@ export class DataextensionFolderManager extends FolderManager {
 
 	/* Support methods */
 
-	public async customActionFilter(fmUri: FolderManagerUri, content: string): Promise<string> {
+	public async customActionFilter(fmUri: FolderManagerUri, content: string): Promise<string | undefined> {
 		const assetUri = fmUri.isAsset ? fmUri : fmUri.parent;
 
 		if (assetUri === undefined) {

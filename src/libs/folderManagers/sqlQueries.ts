@@ -1,9 +1,10 @@
 import { Asset, AssetFile } from '../asset';
 import { FolderManagerUri } from '../folderManagerUri';
-import { FolderManager, Directory } from '../folderManager';
+import { FolderManager, Directory, CustomAction } from '../folderManager';
 import { APIException, ConnectionController } from '../connectionController';
 import { config } from 'process';
 import { AxiosRequestConfig } from 'axios';
+import { Utils } from '../utils';
 
 
 export class SqlQueriesFolderManager extends FolderManager {
@@ -13,6 +14,12 @@ export class SqlQueriesFolderManager extends FolderManager {
 	constructor() {
 		super();
 		this.directoriesCache = new Map<string, Promise<Array<Directory>>>();
+
+		this.customActions.push({
+			command: "mcfs.query.run",
+			waitLabel: "Running a Query",
+			callback: (fmUri: FolderManagerUri, content: string): Promise<string | undefined> => this.customActionRunQuery(fmUri, content)
+		} as CustomAction);
 	}
 
 	/* Interface implementation */
@@ -85,6 +92,62 @@ export class SqlQueriesFolderManager extends FolderManager {
 	}
 
 	/* Support methods */
+
+	public async customActionRunQuery(fmUri: FolderManagerUri, content: string): Promise<string | undefined> {
+		const assetUri = fmUri.isAsset ? fmUri : fmUri.parent;
+
+		if (assetUri === undefined) return;
+
+		const asset = await this.getAsset(assetUri, false);
+		const queryId = JSON.parse(asset.content)?.["queryDefinitionId"];
+
+		if (!queryId) return;
+
+		await this.runQuery(queryId, fmUri.connectionId);
+
+		const retriesDelay = 5000;
+		const maxNumberOfRetries = 20;
+		let currentRetry = 0;
+
+		while (maxNumberOfRetries > currentRetry++) {
+			await Utils.getInstance().delay(retriesDelay);
+			const isRunning = await this.isQueryRunning(queryId, fmUri.connectionId);
+
+			if (!isRunning) {
+				break;
+			}
+		}
+
+		return;
+	}
+
+
+
+	private async runQuery(queryId: string, connectionId: string): Promise<void> {
+		const config: AxiosRequestConfig = {
+			method: 'post',
+			url: `automation/v1/queries/${queryId}/actions/start`
+		};
+
+		const result = await ConnectionController.getInstance().restRequest(connectionId, config);
+
+		//Utils.getInstance().log(JSON.stringify(result));
+
+		return;
+	}
+
+	private async isQueryRunning(queryId: string, connectionId: string): Promise<Boolean> {
+		const config: AxiosRequestConfig = {
+			method: 'get',
+			url: `automation/v1/queries/${queryId}/actions/isrunning`
+		};
+
+		const data: any = await ConnectionController.getInstance().restRequest(connectionId, config);
+
+		//Utils.getInstance().log(JSON.stringify(data));
+
+		return data.isRunning;
+	}
 
 	private extractFiles(assetData: any): Array<AssetFile> {
 		let result: Array<AssetFile> = [];
