@@ -162,7 +162,7 @@
 					"patterns": [
 						{
 							"name": "constant.character.escape.amp",
-							"match": "\\\\\""
+							"match": "\"\""
 						}
 					]
 				},
@@ -183,7 +183,7 @@
 					"patterns": [
 						{
 							"name": "constant.character.escape.amp",
-							"match": "\\\\'"
+							"match": "''"
 						}
 					]
 				}
