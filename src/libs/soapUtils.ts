@@ -99,11 +99,15 @@ export class SoapFilterExpression {
 
 	constructor(expressionString: string) {
 		JSEP.addBinaryOp("and", 2);
+		JSEP.addBinaryOp("AND", 2);
 		JSEP.addBinaryOp("or", 1);
+		JSEP.addBinaryOp("OR", 1);
 		JSEP.addBinaryOp("=", 6);
 		JSEP.addBinaryOp("<>", 6);
+		JSEP.addBinaryOp("like", 6);
+		JSEP.addBinaryOp("LIKE", 6);
 
-		this.expression = JSEP(expressionString.toLowerCase());
+		this.expression = JSEP(expressionString);
 	}
 
 	get filter(): any {
@@ -147,7 +151,7 @@ export class SoapFilterExpression {
 	}
 
 	getLogicalOperator(operator: string): string {
-		switch (operator) {
+		switch (operator.toLowerCase()) {
 			case "&&":
 			case "and":
 				return "AND";
@@ -160,7 +164,7 @@ export class SoapFilterExpression {
 	}
 
 	getSimpleOperator(operator: string): string | undefined {
-		switch (operator) {
+		switch (operator.toLowerCase()) {
 			case "==":
 			case "=":
 				return "equals";
@@ -171,6 +175,8 @@ export class SoapFilterExpression {
 				return "greaterThan";
 			case "<":
 				return "lessThan";
+			case "like":
+				return "like";
 		}
 
 		return undefined;

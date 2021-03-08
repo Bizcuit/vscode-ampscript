@@ -73,7 +73,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 				vscode.window.withProgress({
 					location: vscode.ProgressLocation.Notification,
-					title: 'Running Query',
+					title: a.waitLabel,
 					cancellable: true
 				}, async (progress, token) => {
 					const result = await a.callback(fmUri, currentContent);

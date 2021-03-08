@@ -48,7 +48,7 @@ export class DataextensionFolderManager extends FolderManager {
 	}
 
 	getFileExtensions(): Array<string> {
-		return ['.csv'];
+		return ['.csv', '.txt'];
 	}
 
 	async getSubdirectories(directoryUri: FolderManagerUri): Promise<string[]> {
@@ -97,6 +97,10 @@ export class DataextensionFolderManager extends FolderManager {
 							new AssetFile("columns.readonly.json", "", "", async () => {
 								const columns = await this.getDataextensionColumns(directoryUri.connectionId, customerKey);
 								return JSON.stringify(columns, null, 2);
+							}),
+							new AssetFile("docs.readonly.txt", "", "", async () => {
+								const columns = await this.getDataextensionColumns(directoryUri.connectionId, customerKey);
+								return this.getDocumentationFileContent(name, columns);
 							})
 						]
 					);
@@ -138,6 +142,24 @@ export class DataextensionFolderManager extends FolderManager {
 
 	/* Support methods */
 
+	private getDocumentationFileContent(name: string, columns: any) {
+		let content = `Dataextension: ${name}\r\n\r\n`;
+
+		content += '||Name||Type||Required||PrimaryKey||Default Value||\r\n';
+
+		columns.forEach((c: any) => {
+			let type = c.FieldType;
+
+			if (c.MaxLength && c.FieldType == 'Decimal') {
+				type += '(' + c.MaxLength + (c.Scale ? ',' + c.Scale : '') + ')';
+			}
+
+			content += `|${c.Name}|${type}|${c.IsRequired}|${c.IsPrimaryKey}|${c.DefaultValue}|\r\n`;
+		})
+
+		return content;
+	}
+
 	public async customActionFilter(fmUri: FolderManagerUri, content: string): Promise<string | undefined> {
 		const assetUri = fmUri.isAsset ? fmUri : fmUri.parent;
 
@@ -158,11 +180,14 @@ export class DataextensionFolderManager extends FolderManager {
 		const customerKey = SoapUtils.getStrProp(JSON.parse(asset.content), "CustomerKey");
 		const rows = await this.getDataextensionRows(assetUri.connectionId, customerKey, filter);
 
-		if (fmUri.name.endsWith(".csv")) {
-			return rows !== undefined ? Papa.unparse(rows) : ""
+		if (!rows?.length) {
+			Utils.getInstance().showErrorMessage(new Error(`There are no data rows that match your filter: '${filterString}'. Non-filtered content will be shown`));
+			return undefined;
 		}
 
-		return JSON.stringify(rows, null, 2);
+		Utils.getInstance().showInformationMessage("Filter applied");
+
+		return fmUri.name.endsWith(".csv") ? Papa.unparse(rows) : JSON.stringify(rows, null, 2)
 	}
 
 	private async upsertDataextensionRows(connectionId: string, customerKey: string, rows: Array<any>) {

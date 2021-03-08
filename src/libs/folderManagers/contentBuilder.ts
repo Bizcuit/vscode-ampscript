@@ -62,14 +62,27 @@ export class ContentBuilderFolderManager extends FolderManager {
 	async saveAsset(asset: Asset): Promise<void> {
 		const assetData: any = JSON.parse(asset.content);
 
+		let data: any = {
+			id: assetData.id
+		};
+
+		if (assetData.content) {
+			data['content'] = assetData.content;
+		}
+
+		if (assetData.views) {
+			data['views'] = assetData.views;
+		}
+
+
 		const config: AxiosRequestConfig = {
 			method: 'patch',
 			url: `/asset/v1/content/assets/${assetData.id}`,
-			data: assetData
+			data: data
 		};
 
-		const data: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
-		console.log('Asset updated', data);
+		const response: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
+		console.log('Asset updated', response);
 	}
 
 

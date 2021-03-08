@@ -105,17 +105,26 @@ export class SqlQueriesFolderManager extends FolderManager {
 
 		await this.runQuery(queryId, fmUri.connectionId);
 
-		const retriesDelay = 5000;
+		const retriesDelay = 6000;
 		const maxNumberOfRetries = 20;
 		let currentRetry = 0;
+		let hasFinished = false;
 
 		while (maxNumberOfRetries > currentRetry++) {
 			await Utils.getInstance().delay(retriesDelay);
 			const isRunning = await this.isQueryRunning(queryId, fmUri.connectionId);
 
 			if (!isRunning) {
+				hasFinished = true;
 				break;
 			}
+		}
+
+		if (hasFinished) {
+			Utils.getInstance().showInformationMessage("Query executed successfully");
+		}
+		else {
+			Utils.getInstance().showErrorMessage("Query wait timeout");
 		}
 
 		return;
@@ -144,7 +153,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 
 		const data: any = await ConnectionController.getInstance().restRequest(connectionId, config);
 
-		//Utils.getInstance().log(JSON.stringify(data));
+		Utils.getInstance().log(JSON.stringify(data));
 
 		return data.isRunning;
 	}
