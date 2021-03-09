@@ -145,7 +145,8 @@ export class DataextensionFolderManager extends FolderManager {
 	private getDocumentationFileContent(name: string, columns: any) {
 		let content = `Dataextension: ${name}\r\n\r\n`;
 
-		content += '||Name||Type||Required||PrimaryKey||Default Value||\r\n';
+		content += '| Name                 | Type            | Not NULL | PK       | Default Value   |\r\n';
+		content += '| -------------------- | ---------------P | -------- | -------- | --------------- |\r\n';
 
 		columns.forEach((c: any) => {
 			let type = c.FieldType;
@@ -154,7 +155,12 @@ export class DataextensionFolderManager extends FolderManager {
 				type += '(' + c.MaxLength + (c.Scale ? ',' + c.Scale : '') + ')';
 			}
 
-			content += `|${c.Name}|${type}|${c.IsRequired}|${c.IsPrimaryKey}|${c.DefaultValue}|\r\n`;
+			content += '| ' + c.Name.padEnd(20, ' ')
+				+ ' | ' + type.padEnd(15, ' ')
+				+ ' | ' + c.IsRequired.padEnd(8, ' ')
+				+ ' | ' + c.IsPrimaryKey.padEnd(8, ' ')
+				+ ' | ' + c.DefaultValue.padEnd(15, ' ')
+				+ ' |\r\n';
 		})
 
 		return content;
@@ -190,7 +196,7 @@ export class DataextensionFolderManager extends FolderManager {
 		return fmUri.name.endsWith(".csv") ? Papa.unparse(rows) : JSON.stringify(rows, null, 2)
 	}
 
-	private async upsertDataextensionRows(connectionId: string, customerKey: string, rows: Array<any>) {
+	private async upsertDataextensionRows(connectionId: string, customerKey: string, rows: Array<any>): Promise<any> {
 		const soapRows: Array<any> = rows.map(row => {
 			const o = {
 				CustomerKey: customerKey,

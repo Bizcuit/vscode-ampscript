@@ -115,11 +115,11 @@ export class FolderController {
 		const manager = this.managers.get(uri.mountFolderName);
 
 		if (parent == undefined || !parent.isAsset || manager == undefined) {
-			throw new Error(`Can't read file ${uri.globalPath}`);
+			throw new Error(`Can't read file ${uri.name}`);
 		}
 
 		if (uri.name.includes('.readonly.')) {
-			throw new Error(`You can't change a readonly file ${uri.localPath}`);
+			throw new Error(`You can't change a readonly file ${uri.name}`);
 		}
 
 		const asset = await manager.getAsset(parent);
