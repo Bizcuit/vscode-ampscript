@@ -146,7 +146,7 @@ export class DataextensionFolderManager extends FolderManager {
 		let content = `Dataextension: ${name}\r\n\r\n`;
 
 		content += '| Name                 | Type            | Not NULL | PK       | Default Value   |\r\n';
-		content += '| -------------------- | ---------------P | -------- | -------- | --------------- |\r\n';
+		content += '| -------------------- | --------------- | -------- | -------- | --------------- |\r\n';
 
 		columns.forEach((c: any) => {
 			let type = c.FieldType;
