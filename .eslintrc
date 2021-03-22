@@ -9,9 +9,6 @@
         "plugin:@typescript-eslint/eslint-recommended",
         "plugin:@typescript-eslint/recommended"
     ],
-    "globals": {
-        "vscode": "readonly"
-    },
     "rules": {
         "@typescript-eslint/no-explicit-any": 0
       }
