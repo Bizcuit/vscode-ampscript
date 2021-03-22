@@ -1,16 +1,16 @@
-# NEW FEATURES
-
-* Edit and Run SQL Queries
-* Filter and Edit data in Dataextensions
-* Get dataextension metadata
+# AMPScript [MCFS) v3: NEW FEATURES
 
 ```diff
-@@ Additional API permissions are required for the new features: @@
++ Edit and Run SQL Queries (Special thanks go to Douglas Midgley)
++ Filter and Edit data in Dataextensions
++ Get dataextension metadata
+```
+
+```diff
+Additional API permissions are required for the new features:
 + AUTOMATION: Automations (Read, Write, Execute)
 + DATA: Data Extensions (Read, Write)
 ```
-
-## Special that to Douglas Midgley
 
 ### To run an SQL query
 * Open "Connection Manager": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS', find 'MCFS Connecton Manager' and then hit Enter

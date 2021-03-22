@@ -87,6 +87,16 @@ export class ConnectionController {
 		});
 	}
 
+	async hasTokenRequiredScopes(connectionId: string, scopes: Array<string>): Promise<Boolean> {
+		const token = await this.getToken(connectionId);
+
+		for (let scope of scopes) {
+			if (!token.scope.includes(scope)) return false;
+		}
+
+		return true;
+	}
+
 	async getToken(connectionId: string): Promise<Token> {
 		const pToken: Promise<Token> = this.tokens.get(connectionId) || this.refreshToken(connectionId);
 		let error: Error | undefined = undefined;

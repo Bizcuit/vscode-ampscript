@@ -1,3 +1,4 @@
+src/connection-manager/package-lock.json
 *.vsix
 .DS_Store
 out

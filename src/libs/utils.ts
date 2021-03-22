@@ -6,7 +6,8 @@ export class Utils {
 
 	private static instance: Utils | null = null;
 	private channel: vscode.OutputChannel;
-	private isConfigUpdated = true;
+	private isConfigUpdated: boolean = true;
+	private extensionVersion: string = "";
 
 	static getInstance(): Utils {
 		if (Utils.instance === null) {
@@ -18,6 +19,20 @@ export class Utils {
 
 	constructor() {
 		this.channel = vscode.window.createOutputChannel('MCFS');
+	}
+
+	getExtensionVersion(extensionPath: string): string {
+		try {
+			if (this.extensionVersion !== "") return this.extensionVersion;
+
+			const fsPath = path.join(extensionPath, "package.json");
+			const packageFile = JSON.parse(fs.readFileSync(fsPath, "utf8"));
+
+			this.extensionVersion = packageFile?.version || "";
+		}
+		catch (err) { }
+
+		return this.extensionVersion;
 	}
 
 	showInformationMessage(message: string) {

@@ -26,6 +26,15 @@ export class SqlQueriesFolderManager extends FolderManager {
 	async getAssetsInDirectory(directoryUri: FolderManagerUri): Promise<Asset[]> {
 		const directoryId: number = await this.getDirectoryId(directoryUri);
 
+		const hasTokenScopes = await ConnectionController.getInstance().hasTokenRequiredScopes(
+			directoryUri.connectionId,
+			['automations_execute', 'automations_read', 'automations_write']
+		);
+
+		if (!hasTokenScopes) {
+			throw new Error('AUTOMATION: Automations (Read, Write, Execute) permissions are required for this function. Please update your installed package and restart VSCode.');
+		}
+
 		const config: AxiosRequestConfig = {
 			method: 'get',
 			url: `/automation/v1/queries/category/${directoryId}`,
