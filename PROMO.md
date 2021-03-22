@@ -10,7 +10,7 @@
 + DATA: Data Extensions (Read, Write)
 ```
 
-## Special that to Douglas Midgley
+## Special thanks go to Douglas Midgley
 
 ### To run an SQL query
 * Open "Connection Manager": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS', find 'MCFS Connecton Manager' and then hit Enter
