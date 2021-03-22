@@ -2,7 +2,6 @@
 
 import axios, { AxiosRequestConfig } from 'axios';
 import * as xml2js from 'xml2js';
-import { Utils } from './utils';
 
 interface Token {
 	rest_instance_url: string;
@@ -89,7 +88,7 @@ export class ConnectionController {
 	}
 
 	async getToken(connectionId: string): Promise<Token> {
-		let pToken: Promise<Token> = this.tokens.get(connectionId) || this.refreshToken(connectionId);
+		const pToken: Promise<Token> = this.tokens.get(connectionId) || this.refreshToken(connectionId);
 		let error: Error | undefined = undefined;
 
 		try {
@@ -133,7 +132,7 @@ export class ConnectionController {
 			headers: { 'Content-Type': 'application/json' },
 			data: connection
 		}).then((response: any) => {
-			let token = response.data as Token;
+			const token = response.data as Token;
 			token.expires = new Date(now + (token.expires_in - 5) * 1000);
 			return token; ``
 		});

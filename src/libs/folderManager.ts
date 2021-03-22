@@ -95,14 +95,14 @@ export abstract class FolderManager {
 	 */
 	getAssetDirectoryName(name: string, assetData: any): string {
 		return `Ω 🟦  ${name}.${this.constructor.name.toLowerCase()}`;
-	};
+	}
 
 	/**
 	 * Returns the original name of the asset based on asset directory name
 	 * @param directoryName 
 	 */
 	getAssetNameByDirectoryName(directoryName: string): string | undefined {
-		const match = directoryName.match(/^(?<prefix>([^\x00-\x7F]|\s)+)(?<name>.+)\.(?<suffix>[^\.]+)$/);
+		const match = directoryName.match(/^(?<prefix>([^\x00-\x7F]|\s)+)(?<name>.+)\.(?<suffix>[^.]+)$/);
 		return match?.groups?.name;
 	}
 

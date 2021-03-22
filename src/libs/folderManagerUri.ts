@@ -21,7 +21,7 @@ export class FolderManagerUri {
 		this.isAsset = this.name.startsWith('Ω');
 		const basePath = `${uri.scheme}://${this.connectionId}/`;
 
-		let chunks = uri.path.replace(/\\/g, '/').replace(/(^\/)|(\/$)/g, '').split('/');
+		const chunks = uri.path.replace(/\\/g, '/').replace(/(^\/)|(\/$)/g, '').split('/');
 		this.mountFolderName = chunks.shift() || '';
 		this.localPath = chunks.join('/');
 		this.mountPath = this.mountFolderName !== '' ? basePath + this.mountFolderName + '/' : '';
@@ -33,7 +33,7 @@ export class FolderManagerUri {
 	}
 
 	get parent(): FolderManagerUri | undefined {
-		let chunks = this.localPath.split('/');
+		const chunks = this.localPath.split('/');
 
 		if (chunks.length > 0) {
 			chunks.pop();

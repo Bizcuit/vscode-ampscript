@@ -1,7 +1,5 @@
 'use strict';
 
-import { getMaxListeners } from "process";
-
 export type LazyContentDelegate = (() => Promise<string>) | undefined;
 
 export class AssetFile {

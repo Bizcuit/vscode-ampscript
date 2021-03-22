@@ -7,7 +7,6 @@ import { Connection } from './libs/connectionController';
 import { Utils, WebPanel, WebPanelMessage } from './libs/utils';
 import { ConnectionController } from './libs/connectionController';
 import { FolderManagerUri } from './libs/folderManagerUri';
-import { DataextensionFolderManager } from './libs/folderManagers/dataextensions';
 import { FolderController } from './libs/folderController';
 
 let isConnectionManagerOpened = false;
@@ -17,7 +16,7 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	try {
 		const mcfs = new MCFS();
-		 
+		
 		let connections = Utils.getInstance().getConfig('connections');
 
 		ConnectionController.getInstance().setConnections(connections);
@@ -105,7 +104,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 function connect(connection: Connection): void {
-	let mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
+	const mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
 
 	//TODO: replace folder
 
@@ -177,7 +176,7 @@ function showPromoPage(externsionPath: string) {
 		return false;
 	}
 
-	let uri = vscode.Uri.file(path.join(externsionPath, 'PROMO.md'))
+	const uri = vscode.Uri.file(path.join(externsionPath, 'PROMO.md'))
 
 	Utils.getInstance().setConfigField('notifications', 'hasShownChangelog', true);
 	vscode.commands.executeCommand('markdown.showPreview', uri);

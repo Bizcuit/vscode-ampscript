@@ -1,4 +1,3 @@
-import * as path from 'path';
 import * as vscode from 'vscode';
 import { FolderController } from './libs/folderController';
 import { FolderManagerUri } from './libs/folderManagerUri';
@@ -6,7 +5,7 @@ import { Utils } from './libs/utils';
 
 export class MCFS implements vscode.FileSystemProvider {
 	stat(uri: vscode.Uri): vscode.FileStat {
-		let fmUri = new FolderManagerUri(uri);
+		const fmUri = new FolderManagerUri(uri);
 
 		if (!FolderController.getInstance().hasManager(fmUri)) {
 			throw vscode.FileSystemError.FileNotFound();
@@ -32,7 +31,7 @@ export class MCFS implements vscode.FileSystemProvider {
 		const pFiles = FolderController.getInstance().getFiles(fmUri);
 
 		try {
-			let [subdirectories, assets, files] = await Promise.all([pSubdirectories, pAssets, pFiles]);
+			const [subdirectories, assets, files] = await Promise.all([pSubdirectories, pAssets, pFiles]);
 
 			return [
 				...subdirectories.map<[string, vscode.FileType]>(d => [d, vscode.FileType.Directory]),
@@ -55,7 +54,7 @@ export class MCFS implements vscode.FileSystemProvider {
 		}
 
 		try {
-			return await FolderController.getInstance().readFile(fmUri);
+			return FolderController.getInstance().readFile(fmUri);
 		}
 		catch (err) {
 			Utils.getInstance().showErrorMessage(err);
@@ -71,7 +70,7 @@ export class MCFS implements vscode.FileSystemProvider {
 		}
 
 		try {
-			return await FolderController.getInstance().writeFile(fmUri, content);
+			return FolderController.getInstance().writeFile(fmUri, content);
 		}
 		catch (err) {
 			Utils.getInstance().logError(err);
