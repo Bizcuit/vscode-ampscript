@@ -172,14 +172,16 @@ function showPromoBanner(connectionManagerCallback: () => void) {
 
 function showPromoPage(externsionPath: string) {
 	const notifications = Utils.getInstance().getConfig('notifications');
+	const version = Utils.getInstance().getExtensionVersion(externsionPath);
 
-	if (notifications["hasShownChangelog"]) {
+	if (notifications["hasSeenPromoForVersion"] === version) {
 		return false;
 	}
 
 	let uri = vscode.Uri.file(path.join(externsionPath, 'PROMO.md'))
 
-	Utils.getInstance().setConfigField('notifications', 'hasShownChangelog', true);
+	Utils.getInstance().setConfigField('notifications', 'hasSeenPromoForVersion', version);
+
 	vscode.commands.executeCommand('markdown.showPreview', uri);
 
 	return true;

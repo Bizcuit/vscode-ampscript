@@ -325,6 +325,15 @@ export class DataextensionFolderManager extends FolderManager {
 	}
 
 	private async getSubdirectoriesByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Directory>> {
+		const hasTokenScopes = await ConnectionController.getInstance().hasTokenRequiredScopes(
+			uri.connectionId,
+			['data_extensions_read', 'data_extensions_write']
+		);
+
+		if (!hasTokenScopes) {
+			throw new Error('DATA: Data Extensions (Read, Write) permissions are required for this function. Please update your installed package and restart VSCode.');
+		}
+
 		let data = await ConnectionController.getInstance().soapRequest(uri.connectionId, {
 			operation: SoapOperation.RETRIEVE,
 			body: SoapUtils.createRetrieveBody(

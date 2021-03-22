@@ -111,7 +111,7 @@
 						"hasOpenedConnectionManager": false,
 						"hasConnectedToMC": false,
 						"dontShowConnectionManagerAlert": false,
-						"hasShownChangelog": false
+						"hasSeenPromoForVersion": ""
 					}
 				}
 			}
