@@ -2,25 +2,30 @@
 
 import * as vscode from 'vscode';
 import * as path from 'path';
+import { MCFS } from './mcfsFileSystemProvider';
+import { Connection } from './libs/connectionController';
+import { Utils, WebPanel, WebPanelMessage } from './libs/utils';
+import { ConnectionController } from './libs/connectionController';
+import { FolderManagerUri } from './libs/folderManagerUri';
+import { DataextensionFolderManager } from './libs/folderManagers/dataextensions';
+import { FolderController } from './libs/folderController';
 
-import { MCFS } from './fileSystemProvider';
-import { Utils, ConnectionManagerPanel, ConnectionManagerMessage, Connection } from './utils';
-
-let isConfigUpdated = true;
 let isConnectionManagerOpened = false;
 
 export async function activate(context: vscode.ExtensionContext) {
-	console.log('AMPscript extension activated...');
+	Utils.getInstance().log('MCFS extension activated');
 
 	try {
-		let connections = getConfig('connections');
+		const mcfs = new MCFS();
+		 
+		let connections = Utils.getInstance().getConfig('connections');
 
-		const mcfs = new MCFS(connections);
+		ConnectionController.getInstance().setConnections(connections);
 
-		const panel = new ConnectionManagerPanel();
+		const panel = new WebPanel('mcfs_connection_manager', 'MCFS Connection Manager');
 
 		const openConnectionManager = () => {
-			updateConfigField('notifications', 'hasOpenedConnectionManager', true);
+			Utils.getInstance().setConfigField('notifications', 'hasOpenedConnectionManager', true);
 
 			panel.onMessageReceived = (message: any) => {
 
@@ -29,20 +34,20 @@ export async function activate(context: vscode.ExtensionContext) {
 						panel.postMessage({
 							action: 'SET_CONFIGS',
 							content: connections
-						} as ConnectionManagerMessage);
+						} as WebPanelMessage);
 						break;
 
 					case 'CONNECT':
 						connect(message.content as Connection);
-						updateConfigField('notifications', 'hasConnectedToMC', true);
+						Utils.getInstance().setConfigField('notifications', 'hasConnectedToMC', true);
 						panel.close();
 						break;
 
 					case 'UPDATE':
 						connections = message.content;
-						mcfs.setConnections(connections);
-						updateConfig('connections', connections);
-						vscode.window.showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
+						ConnectionController.getInstance().setConnections(connections);
+						Utils.getInstance().setConfig('connections', connections);
+						Utils.getInstance().showInformationMessage('Connections saved. Press "Connect" and then open File Explorer');
 						break;
 				}
 			};
@@ -57,6 +62,33 @@ export async function activate(context: vscode.ExtensionContext) {
 			openConnectionManager();
 		}));
 
+		FolderController.getInstance().customActions.forEach((a) => {
+			context.subscriptions.push(vscode.commands.registerTextEditorCommand(a.command, async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
+				const uri = textEditor?.document?.uri;
+
+				if (uri === undefined) return;
+
+				const fmUri = new FolderManagerUri(uri);
+				const currentContent = textEditor.document.getText();
+
+				vscode.window.withProgress({
+					location: vscode.ProgressLocation.Notification,
+					title: a.waitLabel,
+					cancellable: true
+				}, async (progress, token) => {
+					const result = await a.callback(fmUri, currentContent);
+
+					if (result !== undefined && currentContent !== result) {
+						textEditor.edit((editBuilder) => {
+							editBuilder.replace(new vscode.Selection(0, 0, textEditor.document.lineCount, 0), result);
+						});
+					}
+
+					return;
+				});
+			}));
+		});
+
 		setTimeout(_ => {
 			if (!isConnectionManagerOpened) {
 				if (!showPromoPage(context.extensionPath)) {
@@ -68,12 +100,14 @@ export async function activate(context: vscode.ExtensionContext) {
 		enableSnippets(context.extensionPath);
 	}
 	catch (err) {
-		vscode.window.showErrorMessage('Ampscript extension error: ' + err.toString());
+		Utils.getInstance().showErrorMessage(err);
 	}
 }
 
 function connect(connection: Connection): void {
 	let mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
+
+	//TODO: replace folder
 
 	if (undefined === vscode.workspace.getWorkspaceFolder(mcfsUri)) {
 		vscode.workspace.updateWorkspaceFolders(
@@ -84,36 +118,12 @@ function connect(connection: Connection): void {
 			}
 		);
 	}
-	vscode.window.showInformationMessage(`Connected to ${connection.account_id}. Open File Explorer...`);
-}
 
-function getConfig(section: string): any {
-	const config = vscode.workspace.getConfiguration('mcfs');
-	return config?.get(section);
-}
-
-function updateConfig(section: string, value: any) {
-	const config = vscode.workspace.getConfiguration('mcfs');
-
-	let updateInterval = setInterval(_ => {
-		if (isConfigUpdated) {
-			isConfigUpdated = false;
-			config?.update(section, value, true).then(_ => {
-				isConfigUpdated = true;
-				clearInterval(updateInterval);
-			});
-		}
-	}, 5);
-}
-
-function updateConfigField(section: string, field: string, value: any) {
-	const data = getConfig(section);
-	data[field] = value;
-	updateConfig(section, data);
+	Utils.getInstance().showInformationMessage(`Connected to ${connection.account_id}. Open File Explorer...`);
 }
 
 function enableSnippets(extensionPath: string) {
-	Utils.readJSON(extensionPath + '/syntaxes/snippets.json').then(snippets => {
+	Utils.getInstance().readJSON(extensionPath + '/syntaxes/snippets.json').then(snippets => {
 		vscode.languages.registerHoverProvider('AMPscript', {
 			provideHover(document, position, token) {
 				let word = document.getText(document.getWordRangeAtPosition(position));
@@ -136,7 +146,7 @@ function enableSnippets(extensionPath: string) {
 }
 
 function showPromoBanner(connectionManagerCallback: () => void) {
-	const notifications = getConfig('notifications');
+	const notifications = Utils.getInstance().getConfig('notifications');
 
 	if (!notifications || notifications["dontShowConnectionManagerAlert"] || notifications["hasConnectedToMC"]) {
 		return;
@@ -155,13 +165,13 @@ function showPromoBanner(connectionManagerCallback: () => void) {
 				vscode.env.openExternal(vscode.Uri.parse('https://github.com/Bizcuit/vscode-ampscript'));
 			}
 			else if (selection == "NO") {
-				updateConfigField('notifications', 'dontShowConnectionManagerAlert', true);
+				Utils.getInstance().setConfigField('notifications', 'dontShowConnectionManagerAlert', true);
 			}
 		});
 }
 
 function showPromoPage(externsionPath: string) {
-	const notifications = getConfig('notifications');
+	const notifications = Utils.getInstance().getConfig('notifications');
 
 	if (notifications["hasShownChangelog"]) {
 		return false;
@@ -169,7 +179,7 @@ function showPromoPage(externsionPath: string) {
 
 	let uri = vscode.Uri.file(path.join(externsionPath, 'PROMO.md'))
 
-	updateConfigField('notifications', 'hasShownChangelog', true);
+	Utils.getInstance().setConfigField('notifications', 'hasShownChangelog', true);
 	vscode.commands.executeCommand('markdown.showPreview', uri);
 
 	return true;

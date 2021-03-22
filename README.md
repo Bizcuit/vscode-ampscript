@@ -27,6 +27,8 @@ As of now, you **can only edit existing assets** (content blocks, emails, cloudp
 	* CHANNELS: Email (Read and Write)
 	* CHANNELS: Web (Read, Write, Publish)
 	* ASSETS: Saved Content (Read and Write)
+	* AUTOMATION: Automations (Read, Write, Execute)
+	* DATA: Data Extensions (Read, Write)
 * Grant access to all required BUs
 * Provide package details in the connection manager below, save it and connect
 * You'll find the entire Content Builder library in your File Explorer tab
