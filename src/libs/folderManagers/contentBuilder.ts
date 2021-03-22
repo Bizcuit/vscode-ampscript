@@ -85,7 +85,6 @@ export class ContentBuilderFolderManager extends FolderManager {
 		console.log('Asset updated', response);
 	}
 
-
 	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
 		let assetData: any = JSON.parse(asset.content);
 
@@ -273,12 +272,25 @@ export class ContentBuilderFolderManager extends FolderManager {
 
 			for (let viewName in views) {
 				let data: any = assetData?.views[viewName]?.meta?.options?.customBlockData;
+
 				if (data) {
 					result.push(new AssetFile(
 						viewName.toLowerCase() + '.json',
 						JSON.stringify(data, null, 2),
 						`views/${viewName}/meta/options/customBlockData`
 					));
+
+					const fields = ["display:message", "display:message:display", "display:title", "display:title:display", "display:subtitle", "display:subtitle:display"];
+
+					fields.forEach((f: string) => {
+						if (data[f] !== undefined) {
+							result.push(new AssetFile(
+								f.toLowerCase().replace(/[:]/gi, '_') + '.amp',
+								data[f],
+								`views/${viewName}/meta/options/customBlockData/${f}`
+							));
+						}
+					})
 				}
 			}
 		}

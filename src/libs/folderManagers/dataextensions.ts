@@ -94,11 +94,11 @@ export class DataextensionFolderManager extends FolderManager {
 								const rows = await this.getDataextensionRows(directoryUri.connectionId, customerKey);
 								return JSON.stringify(rows, null, 2);
 							}),
-							new AssetFile("columns.readonly.json", "", "", async () => {
+							new AssetFile("_columns.readonly.json", "", "", async () => {
 								const columns = await this.getDataextensionColumns(directoryUri.connectionId, customerKey);
 								return JSON.stringify(columns, null, 2);
 							}),
-							new AssetFile("docs.readonly.txt", "", "", async () => {
+							new AssetFile("_docs.readonly.txt", "", "", async () => {
 								const columns = await this.getDataextensionColumns(directoryUri.connectionId, customerKey);
 								return this.getDocumentationFileContent(name, columns);
 							})
@@ -132,6 +132,8 @@ export class DataextensionFolderManager extends FolderManager {
 			const rows = JSON.parse(file.content);
 			await this.upsertDataextensionRows(asset.connectionId, customerKey, rows);
 		}
+
+		return;
 	}
 
 	async saveAsset(asset: Asset): Promise<void> {
@@ -143,7 +145,7 @@ export class DataextensionFolderManager extends FolderManager {
 	/* Support methods */
 
 	private getDocumentationFileContent(name: string, columns: any) {
-		let content = `Dataextension: ${name}\r\n\r\n`;
+		let content = `Dataextension name: ${name}\r\n\r\n`;
 
 		content += '| Name                 | Type            | Not NULL | PK       | Default Value   |\r\n';
 		content += '| -------------------- | --------------- | -------- | -------- | --------------- |\r\n';
@@ -176,7 +178,7 @@ export class DataextensionFolderManager extends FolderManager {
 		const filterString = await vscode.window.showInputBox({
 			value: this.filterString,
 			ignoreFocusOut: true,
-			placeHolder: "Your filter query string"
+			placeHolder: "Your filter query string. EG: OrderID = 'ORD2123F2' AND SubscriberKey = 'ABC'"
 		});
 
 		this.filterString = filterString || "";

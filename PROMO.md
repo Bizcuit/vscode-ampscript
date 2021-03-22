@@ -1,3 +1,33 @@
+# NEW FEATURES
+
+* Edit and Run SQL Queries
+* Filter and Edit data in Dataextensions
+* Get dataextension metadata
+
+```diff
+@@ Additional API permissions are required for the new features: @@
++ AUTOMATION: Automations (Read, Write, Execute)
++ DATA: Data Extensions (Read, Write)
+```
+
+## Special that to Douglas Midgley
+
+### To run an SQL query
+* Open "Connection Manager": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS', find 'MCFS Connecton Manager' and then hit Enter
+* Connect to your MC Account, go to File Explorer and open your BU folder
+* Open "SQL Queries folder", find your query asset and open a "query.sql" file
+* Open the "Command Pallet": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS'
+* Select "MCFS: Run SQL Query" and hit Enter
+
+### To filter a dataextension
+* Open "Connection Manager": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS', find 'MCFS Connecton Manager' and then hit Enter
+* Connect to your MC Account, go to File Explorer and open your BU folder
+* Open "Dataextensions", find your dataextension asset and open "rows.csv" file
+* Open the "Command Pallet": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS'
+* Select "MCFS: Filter a Dataextension" and hit Enter. 
+* Set the filter and hit enter
+* Filter example: OrderID = 'ORD2123F2' AND SubscriberKey = 'ABC'
+
 # Direct connection to Marketing Cloud
 
 Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript** extension for Visual Studio Code. This version brings some really cool new features, that I would like to share with you. 
@@ -11,7 +41,7 @@ Share your ideas using [this form](https://docs.google.com/forms/d/e/1FAIpQLSc8N
 
 ## 1. Connect directly to your Marketing Cloud Account
 
-With a quick 5 minutes setup you'll be able to edit content blocks, emails and cloudpages without leaving Visual Studio Code. You can now avoid frequent copy-pasting and focus on your work. Have a look a quick demo below. To open Connection Manager: 
+With a quick 5 minutes setup you'll be able to edit content blocks, emails, cloudpages, dataextensions and SQL queries without leaving Visual Studio Code. You can now avoid frequent copy-pasting and focus on your work. Have a look a quick demo below. To open Connection Manager: 
 * Press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) 
 * Start typing 'MCFS'
 * Find 'MCFS Connecton Manager' and then press Enter
@@ -37,9 +67,13 @@ As of now, you **can only edit existing assets** (content blocks, emails, cloudp
 
 Detailed instructions with screenshots are available directly in the Connection Manager. To open Connection Manager press F1 (or 'CMD+Shift+P' on Mac and 'CTRL+Shift+P' on Windows) and start typing 'MCFS'. Find 'MCFS Connecton Manager' and then hit Enter.
 
+### Assets that you can work with
+* Content Builder assets (Emails, Messages and Content Blocks)
+* Landing Pages (created with Content Builder editor)
+* Dataextensions (Edit data in dataextensions, apply filters, export to CSV etc.)
+* SQL Queries (Edit queries and Run them)
 
-
-### 1.b How to edit Content Builder assets directly from Visual Studio Code
+### 1.b How to edit assets directly from Visual Studio Code
 
 Each asset is presented as a folder that starts with an 'Ω' symbol. You can easily distinguish different asset types based on the colored square that goes after 'Ω':
 * 🟥 - blocks
