@@ -1,13 +1,19 @@
-# AMPScript [MCFS) v3: NEW FEATURES
+# AMPScript [MCFS] v3.0.1
+
+Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript [MCFS]** extension for Visual Studio Code. This version brings some really cool new features, that I would like to share with you. Share your ideas using [this form](https://docs.google.com/forms/d/e/1FAIpQLSc8NCJcqTxMIIJ5J1pWKTnPY2JewvTS8GU6b9-Lvhdze1N4RA/viewform?usp=sf_link), leave your feedback on the [Extension Page](https://marketplace.visualstudio.com/items?itemName=sergey-agadzhanov.AMPscript) or add a star on my [github repository](https://github.com/Bizcuit/vscode-ampscript).
 
 ```diff
-+ Edit and Run SQL Queries (Special thanks go to Douglas Midgley)
-+ Filter and Edit data in Dataextensions
++ === NEW FEATURES ===
+
++ Edit and Run SQL Queries (special thanks go to Douglas Midgley)
++ Filter and Edit data in Dataextensions (work with DEs like with CSV files)
 + Get dataextension metadata
-```
 
-```diff
-Additional API permissions are required for the new features:
+- === IMPORTANT ===
+- Additional API permissions are required for the new features
+- Update your MC Installed package and restart VS Code:
+
++ === REQUIRED PERMISSIONS ===
 + AUTOMATION: Automations (Read, Write, Execute)
 + DATA: Data Extensions (Read, Write)
 ```
@@ -19,7 +25,7 @@ Additional API permissions are required for the new features:
 * Open the "Command Pallet": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS'
 * Select "MCFS: Run SQL Query" and hit Enter
 
-### To filter a dataextension
+### To filter a Dataextension
 * Open "Connection Manager": press F1 or 'CMD+Shift+P' (Mac) or 'CTRL+Shift+P' (Windows) and start typing 'MCFS', find 'MCFS Connecton Manager' and then hit Enter
 * Connect to your MC Account, go to File Explorer and open your BU folder
 * Open "Dataextensions", find your dataextension asset and open "rows.csv" file
@@ -29,15 +35,6 @@ Additional API permissions are required for the new features:
 * Filter example: OrderID = 'ORD2123F2' AND SubscriberKey = 'ABC'
 
 # Direct connection to Marketing Cloud
-
-Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript** extension for Visual Studio Code. This version brings some really cool new features, that I would like to share with you. 
-
-```diff
-!~ Don't forget to restart Visual Studio Code before using Connection Manager for the first time ~!
-```
-
-Share your ideas using [this form](https://docs.google.com/forms/d/e/1FAIpQLSc8NCJcqTxMIIJ5J1pWKTnPY2JewvTS8GU6b9-Lvhdze1N4RA/viewform?usp=sf_link), leave your feedback on the [Extension Page](https://marketplace.visualstudio.com/items?itemName=sergey-agadzhanov.AMPscript) or add a star on my [github repository](https://github.com/Bizcuit/vscode-ampscript).
-
 
 ## 1. Connect directly to your Marketing Cloud Account
 

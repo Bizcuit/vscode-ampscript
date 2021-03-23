@@ -3,6 +3,11 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [3.0.1] - 2021-03-23
+### Added
+- MCFS: SQL Queries
+- MCFS: Dataextensions
+
 ## [2.0.2] - 2020-09-08
 ### Added
 - MCFS: fix incorrect path names on Windows

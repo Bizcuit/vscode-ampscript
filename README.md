@@ -1,10 +1,10 @@
-# AMPScript syntax highlighting, code snippets and more
+# AMPScript [MCFS] Virtual filesystem for Marketing Cloud, AMPScript syntax highlighting, code snippets and more
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs.gif)
 
 AMPScript is the language used to program emails, content blocks, webpages and script activities in the Salesforce Marketing Cloud. It is not a simple task to write code directly in the UI of MC. This extensions helps you solve this problem.
 
-This extension enables syntax highlighting for AMPScript, allows you to connect Visual Studio Code directly to your MC Account, has built-in documentation for all AMPScript functions and also adds code snippets for language elements and functions. Each snippet includes a detailed description of the function and its parameters. Snippets also show up when you hover a function name.
+This extension allows you to connect Visual Studio Code directly to your MC Account, enables syntax highlighting for AMPScript, has built-in documentation for all AMPScript functions and also adds code snippets for language elements and functions. Each snippet includes a detailed description of the function and its parameters. Snippets also show up when you hover a function name.
 
 With direct connection to MC you can: easily change content in MC without leaving your text editor, save time and avoid frequent copy-pasting. It also helps you to better control the content of your emails, content blocks and cloud pages by exposing additional content attributes that are not available in the UI of MC.
 
@@ -20,7 +20,7 @@ You have two options on how to enable syntax highlighting:
 
 ### How to connect to Marketing Cloud
 
-As of now, you **can only edit existing assets** (content blocks, emails, cloudpage and json message). Functionality that is not supported at the moment: create new asset, rename asset, move asset to a different folder, delete asset.
+As of now, you **can only edit existing assets** (content blocks, emails, cloudpage, json message, sql queries and dataextensions). Functionality that is not supported at the moment: create new asset, rename asset, move asset to a different folder, delete asset.
 
 * In your MC accout, create a new installed package and add a 'Server-to-Server' API integration Component
 * Add the following permissions:
@@ -77,7 +77,7 @@ Each asset folder includes a readonly '__raw.readonly.json' file. This is an API
 
 
 
-#### Copyright 2017-2020 Sergey Agadzhanov
+#### Copyright 2017-2021 Sergey Agadzhanov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

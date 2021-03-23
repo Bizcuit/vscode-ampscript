@@ -1,8 +1,8 @@
 {
 	"name": "ampscript",
-	"displayName": "MC Dev Tools",
-	"description": "Syntax highlighting for AMPscript (Salesforce Marketing Cloud / Exacttarget)",
-	"version": "3.0.0",
+	"displayName": "AMPScript MCFS",
+	"description": "This extension allows you to connect Visual Studio Code directly to your MC Account, enables syntax highlighting for AMPScript, has built-in documentation and much more",
+	"version": "3.0.1",
 	"publisher": "sergey-agadzhanov",
 	"engines": {
 		"vscode": "^1.32.0"
