@@ -27,7 +27,8 @@
 		"vscode:prepublish": "npm run compile; npm run connectionmanager",
 		"connectionmanager": "cd ./src/connection-manager && npm run build",
 		"compile": "tsc -p ./",
-		"watch": "tsc -watch -p ./"
+		"watch": "tsc -watch -p ./",
+		"lint": "eslint . --ext .ts --fix"
 	},
 	"activationEvents": [
 		"onCommand:mcfs.open",
@@ -111,7 +112,7 @@
 						"hasOpenedConnectionManager": false,
 						"hasConnectedToMC": false,
 						"dontShowConnectionManagerAlert": false,
-						"hasSeenPromoForVersion": ""
+						"hasShownChangelog": false
 					}
 				}
 			}
@@ -128,15 +129,18 @@
 	},
 	"icon": "images/logo.png",
 	"devDependencies": {
-		"@types/node": "^7.0.43",
-		"@types/papaparse": "^5.2.4",
-		"@types/vscode": "^1.32.0",
-		"@types/xml2js": "^0.4.7",
-		"typescript": "^3.5.1"
+		"@types/node": "^14.14.35",
+		"@types/papaparse": "^5.2.5",
+		"@types/vscode": "^1.54.0",
+		"@types/xml2js": "^0.4.8",
+		"@typescript-eslint/eslint-plugin": "^4.19.0",
+		"@typescript-eslint/parser": "^4.19.0",
+		"eslint": "^7.22.0",
+		"typescript": "^4.2.3"
 	},
 	"dependencies": {
 		"axios": "^0.21.1",
-		"jsep": "^0.3.5",
+		"jsep": "^0.4.0",
 		"papaparse": "^5.3.0",
 		"xml2js": "^0.4.23"
 	}

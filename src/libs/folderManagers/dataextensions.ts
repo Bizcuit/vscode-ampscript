@@ -1,12 +1,11 @@
 
-import { Asset, AssetFile, LazyContentDelegate } from '../asset';
+import { Asset, AssetFile } from '../asset';
 import { ConnectionController, SoapOperation, SoapRequestConfig } from '../connectionController';
 import { FolderManager, Directory, CustomAction } from '../folderManager';
 import { FolderManagerUri } from '../folderManagerUri';
 import { Utils } from '../utils';
 import * as Papa from 'papaparse';
 import { SoapFilterExpression, SoapUtils } from '../soapUtils';
-import { normalize } from 'xml2js/lib/processors';
 import * as vscode from 'vscode';
 
 interface DataextensionColumn {
@@ -25,7 +24,7 @@ export class DataextensionFolderManager extends FolderManager {
 	readonly mountFolderName: string;
 	readonly ignoreDirectories: boolean;
 	private directoriesCache: Map<string, number>;
-	private filterString: string = "";
+	private filterString = "";
 
 	constructor(mountFolderName: string, ignoreDirectories: boolean) {
 		super();
@@ -64,7 +63,7 @@ export class DataextensionFolderManager extends FolderManager {
 	async getAssetsInDirectory(directoryUri: FolderManagerUri): Promise<Asset[]> {
 		const directoryId: number = await this.getDirectoryId(directoryUri);
 
-		let assets = await ConnectionController.getInstance().soapRequest(directoryUri.connectionId, {
+		const assets = await ConnectionController.getInstance().soapRequest(directoryUri.connectionId, {
 			operation: SoapOperation.RETRIEVE,
 			body: SoapUtils.createRetrieveBody(
 				"DataExtension",
@@ -110,7 +109,7 @@ export class DataextensionFolderManager extends FolderManager {
 
 		if (assets === undefined) return [];
 
-		for (let asset of assets) {
+		for (const asset of assets) {
 			this.assetsCache.set(directoryUri.getChildPath(asset.directoryName), asset);
 		}
 
@@ -207,7 +206,7 @@ export class DataextensionFolderManager extends FolderManager {
 				}
 			};
 
-			for (let col in row) {
+			for (const col in row) {
 				if (col.toLowerCase() !== '_customobjectkey') {
 					o.Properties.Property.push({
 						Name: col,
@@ -219,21 +218,19 @@ export class DataextensionFolderManager extends FolderManager {
 			return o;
 		});
 
-		const result = await ConnectionController.getInstance().soapRequest(connectionId, {
+		return ConnectionController.getInstance().soapRequest(connectionId, {
 			operation: SoapOperation.UPDATE,
 			body: SoapUtils.createUpdateBody(
 				"DataExtensionObject",
 				soapRows
 			)
 		});
-
-		return result;
 	}
 
 	private async getDataextensionRows(connectionId: string, customerKey: string, filter?: any): Promise<Array<any>> {
 		const columns = await this.getDataextensionColumns(connectionId, customerKey);
 
-		const rows = await ConnectionController.getInstance().soapRequest(connectionId, {
+		return ConnectionController.getInstance().soapRequest(connectionId, {
 			operation: SoapOperation.RETRIEVE,
 			body: SoapUtils.createRetrieveBody(
 				`DataExtensionObject[${customerKey}]`,
@@ -245,7 +242,7 @@ export class DataextensionFolderManager extends FolderManager {
 			),
 			transformResponse: (body) => {
 				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
-					let row: any = {};
+					const row: any = {};
 
 					SoapUtils.getArrProp(e, "Properties.Property").forEach((c: any) => {
 						row[SoapUtils.getStrProp(c, "Name")] = SoapUtils.getStrProp(c, "Value");
@@ -255,8 +252,6 @@ export class DataextensionFolderManager extends FolderManager {
 				});
 			}
 		} as SoapRequestConfig);
-
-		return rows;
 	}
 
 	private async getDataextensionColumns(connectionId: string, customerKey: string): Promise<Array<DataextensionColumn>> {
@@ -314,7 +309,7 @@ export class DataextensionFolderManager extends FolderManager {
 			const parentDirectoryId = await this.getDirectoryId(uri.parent);
 			const subdirectories: Array<Directory> = await this.getSubdirectoriesByDirectoryId(uri, parentDirectoryId);
 
-			for (let d of subdirectories) {
+			for (const d of subdirectories) {
 				if (d.name === uri.name) {
 					return d.id;
 				}
@@ -334,7 +329,7 @@ export class DataextensionFolderManager extends FolderManager {
 			throw new Error('DATA: Data Extensions (Read, Write) permissions are required for this function. Please update your installed package and restart VSCode.');
 		}
 
-		let data = await ConnectionController.getInstance().soapRequest(uri.connectionId, {
+		const data = await ConnectionController.getInstance().soapRequest(uri.connectionId, {
 			operation: SoapOperation.RETRIEVE,
 			body: SoapUtils.createRetrieveBody(
 				"DataFolder",
@@ -367,7 +362,7 @@ export class DataextensionFolderManager extends FolderManager {
 		if (data === undefined) return [];
 
 		if (directoryId !== 0) {
-			for (let d of data as Array<Directory>) {
+			for (const d of data as Array<Directory>) {
 				this.directoriesCache.set(uri.getChildPath(d.name), d.id);
 			}
 		}

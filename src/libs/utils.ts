@@ -49,7 +49,7 @@ export class Utils {
 	}
 
 	getErrorMessage(err: any): string {
-		let message: string = '';
+		let message = '';
 
 		message += err?.message ? err?.message + '. ' : '';
 		message += err?.details ? err?.details + '. ' : '';
@@ -110,7 +110,7 @@ export class Utils {
 		this.setConfig(section, data);
 	}
 
-	async delay(time: number) {
+	delay(time: number) {
 		return new Promise((resolve) => {
 			setTimeout(() => resolve(time), time);
 		});
@@ -118,7 +118,7 @@ export class Utils {
 }
 
 export class WebPanelMessage {
-	public action: string = '';
+	public action = '';
 	public content: any = null;
 }
 
@@ -153,7 +153,7 @@ export class WebPanel {
 			this.onMessageReceived(message);
 		});
 
-		let content: string = '';
+		let content = '';
 
 		fs.readFile(indexPath, (err, data) => {
 			if (err) {

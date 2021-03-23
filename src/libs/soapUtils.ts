@@ -1,6 +1,4 @@
-import { SoapOperation } from "./connectionController";
 import * as JSEP from "jsep";
-import { timingSafeEqual } from "crypto";
 
 export class SoapUtils {
 	static getProp(obj: any, path: string, shouldReturnArray = false): any {
@@ -8,7 +6,7 @@ export class SoapUtils {
 
 		const chunks: Array<string> = path.split('.');
 
-		for (let c of chunks) {
+		for (const c of chunks) {
 			if (result?.[c] !== undefined) {
 				result = result?.[c];
 			}

@@ -62,7 +62,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 	async saveAsset(asset: Asset): Promise<void> {
 		const assetData: any = JSON.parse(asset.content);
 
-		let data: any = {
+		const data: any = {
 			id: assetData.id
 		};
 
@@ -81,18 +81,17 @@ export class ContentBuilderFolderManager extends FolderManager {
 			data: data
 		};
 
-		const response: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
-		console.log('Asset updated', response);
+		await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
 
 	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
-		let assetData: any = JSON.parse(asset.content);
+		const assetData: any = JSON.parse(asset.content);
 
 		if (file.path === '') {
 			asset.content = file.content;
 		}
 		else {
-			let path = file.path.split('/');
+			const path = file.path.split('/');
 			let ref: any = assetData;
 
 			for (let i = 0; i < path.length - 1; i++) {
@@ -212,10 +211,10 @@ export class ContentBuilderFolderManager extends FolderManager {
 
 		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 
-		let assets: Array<Asset> = new Array<Asset>();
+		const assets: Array<Asset> = new Array<Asset>();
 
 		(data.items as Array<any>).forEach(a => {
-			let asset = new Asset(
+			const asset = new Asset(
 				a.name,
 				this.getAssetDirectoryName(a.name, a),
 				JSON.stringify(a, null, 2),
@@ -231,7 +230,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 	}
 
 	private extractFiles(assetData: any): Array<AssetFile> {
-		let result: Array<AssetFile> = [];
+		const result: Array<AssetFile> = [];
 
 		if (assetData?.views?.subjectline?.content !== undefined) {
 			result.push(new AssetFile(
@@ -270,8 +269,8 @@ export class ContentBuilderFolderManager extends FolderManager {
 		if (assetData?.views !== undefined) {
 			const views: any = assetData?.views;
 
-			for (let viewName in views) {
-				let data: any = assetData?.views[viewName]?.meta?.options?.customBlockData;
+			for (const viewName in views) {
+				const data: any = assetData?.views[viewName]?.meta?.options?.customBlockData;
 
 				if (data) {
 					result.push(new AssetFile(
@@ -300,18 +299,18 @@ export class ContentBuilderFolderManager extends FolderManager {
 			const slots: any = assetData?.views?.html?.slots;
 			let slotIndex = 0;
 
-			for (let s in slots) {
-				let slot = slots[s];
-				let blocks = slot.blocks || {};
+			for (const s in slots) {
+				const slot = slots[s];
+				const blocks = slot.blocks || {};
 				let blockIndex = 1;
 
 				slotIndex++;
 
-				for (let b in blocks) {
-					let block = blocks[b];
-					let path = `views/html/slots/${s}/blocks/${b}/`;
-					let slotName = 's' + (slotIndex < 10 ? '0' : '') + slotIndex;
-					let blockName = 'b' + (blockIndex < 10 ? '0' : '') + blockIndex;
+				for (const b in blocks) {
+					const block = blocks[b];
+					const path = `views/html/slots/${s}/blocks/${b}/`;
+					const slotName = 's' + (slotIndex < 10 ? '0' : '') + slotIndex;
+					const blockName = 'b' + (blockIndex < 10 ? '0' : '') + blockIndex;
 
 					blockIndex++;
 
@@ -347,7 +346,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 			const parentDirectoryId = await this.getDirectoryId(uri.parent);
 			const subdirectories: Array<Directory> = await this.getSubdirectoriesByDirectoryId(uri, parentDirectoryId);
 
-			for (let d of subdirectories) {
+			for (const d of subdirectories) {
 				if (d.name === uri.name) {
 					return d.id;
 				}
@@ -370,7 +369,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 
 		if (directoryId !== 0) {
-			for (let d of data.items as Array<Directory>) {
+			for (const d of data.items as Array<Directory>) {
 				this.directoriesCache.set(uri.getChildPath(d.name), d.id);
 			}
 		}

@@ -1,8 +1,7 @@
 import { Asset, AssetFile } from '../asset';
 import { FolderManagerUri } from '../folderManagerUri';
 import { FolderManager, Directory, CustomAction } from '../folderManager';
-import { APIException, ConnectionController } from '../connectionController';
-import { config } from 'process';
+import { ConnectionController } from '../connectionController';
 import { AxiosRequestConfig } from 'axios';
 import { Utils } from '../utils';
 
@@ -48,7 +47,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 
 		const data: any = await ConnectionController.getInstance().restRequest(directoryUri.connectionId, config);
 
-		let assets: Array<Asset> = new Array<Asset>();
+		const assets: Array<Asset> = new Array<Asset>();
 
 		(data.items as Array<any>).forEach(a => {
 			const asset: Asset = new Asset(
@@ -83,14 +82,14 @@ export class SqlQueriesFolderManager extends FolderManager {
 			data: assetData
 		};
 
-		const data: any = await ConnectionController.getInstance().restRequest(asset.connectionId, config);
+		await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
 
 	async setAssetFile(asset: Asset, file: AssetFile): Promise<void> {
-		let assetData: any = JSON.parse(asset.content);
+		const assetData: any = JSON.parse(asset.content);
 		assetData[file.path] = file.content;
 		asset.content = JSON.stringify(assetData, null, 2);
-	};
+	}
 
 	getAssetDirectoryName(name: string, assetData: any): string {
 		return `Ω 🟥  ${name}.query`;
@@ -147,12 +146,11 @@ export class SqlQueriesFolderManager extends FolderManager {
 			url: `automation/v1/queries/${queryId}/actions/start`
 		};
 
-		const result = await ConnectionController.getInstance().restRequest(connectionId, config);
-
+		await ConnectionController.getInstance().restRequest(connectionId, config);
 		return;
 	}
 
-	private async isQueryRunning(queryId: string, connectionId: string): Promise<Boolean> {
+	private async isQueryRunning(queryId: string, connectionId: string): Promise<boolean> {
 		const config: AxiosRequestConfig = {
 			method: 'get',
 			url: `automation/v1/queries/${queryId}/actions/isrunning`
@@ -166,7 +164,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 	}
 
 	private extractFiles(assetData: any): Array<AssetFile> {
-		let result: Array<AssetFile> = [];
+		const result: Array<AssetFile> = [];
 
 		if (assetData?.queryText !== undefined) {
 			result.push(new AssetFile(
@@ -198,7 +196,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 		const pDirectories = ConnectionController.getInstance()
 			.restRequest(connectionId, config)
 			.then(response => {
-				let directories = new Array<Directory>();
+				const directories = new Array<Directory>();
 
 				response?.items?.forEach((e: any) => {
 					directories.push({
@@ -236,7 +234,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			const parentDirectoryId = await this.getDirectoryId(uri.parent);
 			const subdirectories: Array<Directory> = await this.getSubdirectoriesByDirectoryId(uri, parentDirectoryId);
 
-			for (let d of subdirectories) {
+			for (const d of subdirectories) {
 				if (d.name === uri.name) {
 					return d.id;
 				}
