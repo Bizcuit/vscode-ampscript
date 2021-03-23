@@ -1,4 +1,4 @@
-# AMPScript [MCFS] Virtual filesystem for Marketing Cloud, AMPScript syntax highlighting, code snippets and more
+# AMPScript [MCFS]: Virtual filesystem for Marketing Cloud, syntax highlighting, code snippets and more
 
 ![AMPScript](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs.gif)
 
