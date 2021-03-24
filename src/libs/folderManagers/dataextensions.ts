@@ -152,8 +152,12 @@ export class DataextensionFolderManager extends FolderManager {
 		columns.forEach((c: any) => {
 			let type = c.FieldType;
 
-			if (c.MaxLength && c.FieldType == 'Decimal') {
+			if (c.FieldType == 'Decimal' && c.MaxLength) {
 				type += '(' + c.MaxLength + (c.Scale ? ',' + c.Scale : '') + ')';
+			}
+
+			if (c.FieldType == 'Text' && c.MaxLength) {
+				type += '(' + c.MaxLength + ')';
 			}
 
 			content += '| ' + c.Name.padEnd(20, ' ')
