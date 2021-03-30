@@ -13,6 +13,10 @@ let isConnectionManagerOpened = false;
 
 export async function activate(context: vscode.ExtensionContext) {
 	Utils.getInstance().log('MCFS extension activated');
+	
+	context.subscriptions.push(Utils.getInstance().telemetry);
+
+	Utils.getInstance().sendTelemetryEvent("activated");
 
 	try {
 		const mcfs = new MCFS();
@@ -24,6 +28,7 @@ export async function activate(context: vscode.ExtensionContext) {
 		const panel = new WebPanel('mcfs_connection_manager', 'MCFS Connection Manager');
 
 		const openConnectionManager = () => {
+			Utils.getInstance().sendTelemetryEvent("connection-manager");
 			Utils.getInstance().setConfigField('notifications', 'hasOpenedConnectionManager', true);
 
 			panel.onMessageReceived = (message: any) => {
@@ -63,6 +68,8 @@ export async function activate(context: vscode.ExtensionContext) {
 
 		FolderController.getInstance().customActions.forEach((a) => {
 			context.subscriptions.push(vscode.commands.registerTextEditorCommand(a.command, async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
+				Utils.getInstance().sendTelemetryEvent(`customaction-${a.command}`);
+
 				const uri = textEditor?.document?.uri;
 
 				if (uri === undefined) return;
@@ -103,9 +110,15 @@ export async function activate(context: vscode.ExtensionContext) {
 	}
 }
 
-function connect(connection: Connection): void {
-	const mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
+export function deactivate() {
+	Utils.getInstance().telemetry.dispose();
+}
 
+function connect(connection: Connection): void {
+	Utils.getInstance().sendTelemetryEvent("connect");
+
+	const mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
+	
 	//TODO: replace folder
 
 	if (undefined === vscode.workspace.getWorkspaceFolder(mcfsUri)) {
@@ -171,7 +184,7 @@ function showPromoBanner(connectionManagerCallback: () => void) {
 
 function showPromoPage(externsionPath: string) {
 	const notifications = Utils.getInstance().getConfig('notifications');
-	const version = Utils.getInstance().getExtensionVersion(externsionPath);
+	const version = Utils.extensionVersion;
 
 	if (notifications["hasSeenPromoForVersion"] === version) {
 		return false;
