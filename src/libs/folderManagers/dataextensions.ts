@@ -330,7 +330,7 @@ export class DataextensionFolderManager extends FolderManager {
 		);
 
 		if (!hasTokenScopes) {
-			throw new Error('DATA: Data Extensions (Read, Write) permissions are required for this function. Please update your installed package and restart VSCode.');
+			throw new Error('Additional permissions required for this function: DATA => Data Extensions (Read, Write). Please update your MC installed package and restart VSCode');
 		}
 
 		const data = await ConnectionController.getInstance().soapRequest(uri.connectionId, {

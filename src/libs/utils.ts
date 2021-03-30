@@ -49,14 +49,20 @@ export class Utils {
 		vscode.window.showInformationMessage(message);
 	}
 
-	showErrorMessage(err: any): void {
+	showErrorMessage(err: any, isModal = false): void {
 		const message = this.getErrorMessage(err);
 		this.logError(err);
-		vscode.window.showErrorMessage(message);
+		vscode.window.showErrorMessage(message, {
+			modal: isModal
+		} as vscode.MessageOptions);
 	}
 
 	getErrorMessage(err: any): string {
 		let message = '';
+
+		if (typeof err === 'string') {
+			message = err;
+		}
 
 		message += err?.message ? err?.message + '. ' : '';
 		message += err?.details ? err?.details + '. ' : '';

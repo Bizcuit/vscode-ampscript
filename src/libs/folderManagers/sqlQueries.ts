@@ -32,7 +32,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 		);
 
 		if (!hasTokenScopes) {
-			throw new Error('AUTOMATION: Automations (Read, Write, Execute) permissions are required for this function. Please update your installed package and restart VSCode.');
+			throw new Error('Additional permissions required for this function: AUTOMATION: Automations (Read, Write, Execute). Please update your installed package and restart VSCode');
 		}
 
 		const config: AxiosRequestConfig = {
