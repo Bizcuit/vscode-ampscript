@@ -107,7 +107,8 @@ export class SqlQueriesFolderManager extends FolderManager {
 		if (assetUri === undefined) return;
 
 		const asset = await this.getAsset(assetUri, false);
-		const queryId = JSON.parse(asset.content)?.["queryDefinitionId"];
+		const assetMetadata: any = JSON.parse(asset.content);
+		const queryId = assetMetadata?.["queryDefinitionId"];
 
 		if (!queryId) return;
 
@@ -135,7 +136,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			Utils.getInstance().showErrorMessage("Query wait timeout");
 		}
 
-		return;
+		return assetMetadata?.["targetId"];
 	}
 
 

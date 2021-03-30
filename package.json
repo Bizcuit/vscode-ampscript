@@ -1,6 +1,6 @@
 {
 	"name": "ampscript",
-	"displayName": "AMPScript MCFS",
+	"displayName": "MCFS [AMPScript]",
 	"description": "This extension allows you to connect Visual Studio Code directly to your MC Account, enables syntax highlighting for AMPScript, has built-in documentation and much more",
 	"version": "3.0.1",
 	"publisher": "sergey-agadzhanov",
@@ -142,6 +142,7 @@
 		"axios": "^0.21.1",
 		"jsep": "^0.4.0",
 		"papaparse": "^5.3.0",
+		"vscode-extension-telemetry": "^0.1.7",
 		"xml2js": "^0.4.23"
 	}
 }

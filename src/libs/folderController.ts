@@ -6,6 +6,7 @@ import { Asset, AssetFile } from './asset';
 import { ContentBuilderFolderManager, AssetSubtype } from './folderManagers/contentBuilder';
 import { SqlQueriesFolderManager } from './folderManagers/sqlQueries';
 import { DataextensionFolderManager } from './folderManagers/dataextensions';
+import { Utils } from './utils';
 
 export class FolderController {
 	private static instance: FolderController | null = null;
@@ -72,6 +73,9 @@ export class FolderController {
 		if (uri.isAsset) {
 			return [];
 		}
+
+		const telementryEvent = "manager-" + uri.mountFolderName.toLowerCase().replace(/\s/g, '');
+		Utils.getInstance().sendTelemetryEvent(telementryEvent, true);
 
 		const manager = this.managers.get(uri.mountFolderName);
 

@@ -1,13 +1,22 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
+import TelemetryReporter from 'vscode-extension-telemetry';
 
 export class Utils {
 
 	private static instance: Utils | null = null;
 	private channel: vscode.OutputChannel;
 	private isConfigUpdated: boolean = true;
-	private extensionVersion: string = "";
+
+	public readonly telemetry: TelemetryReporter;
+	private telementryEventLog: Array<string> = [];
+
+	public static readonly extensionId = "sergey-agadzhanov.AMPscript";
+	public static get extensionVersion(): string {
+		return vscode.extensions.getExtension(Utils.extensionId)?.packageJSON?.version || "";
+	}
+
 
 	static getInstance(): Utils {
 		if (Utils.instance === null) {
@@ -19,20 +28,20 @@ export class Utils {
 
 	constructor() {
 		this.channel = vscode.window.createOutputChannel('MCFS');
+		this.telemetry = new TelemetryReporter(
+			Utils.extensionId,
+			Utils.extensionVersion,
+			Buffer.from("OTc1M2Y5OTAtOTY0Yy00M2Q2LWFiYTEtYjZiMmQyZmVlZDNi", "base64").toString("utf-8")
+		);
 	}
 
-	getExtensionVersion(extensionPath: string): string {
-		try {
-			if (this.extensionVersion !== "") return this.extensionVersion;
-
-			const fsPath = path.join(extensionPath, "package.json");
-			const packageFile = JSON.parse(fs.readFileSync(fsPath, "utf8"));
-
-			this.extensionVersion = packageFile?.version || "";
+	sendTelemetryEvent(event: string, deduplicate: boolean = false) {
+		if (deduplicate) {
+			if (this.telementryEventLog.includes(event)) return;
+			else this.telementryEventLog.push(event);
 		}
-		catch (err) { }
 
-		return this.extensionVersion;
+		this.telemetry.sendTelemetryEvent(event);
 	}
 
 	showInformationMessage(message: string) {
@@ -42,9 +51,7 @@ export class Utils {
 
 	showErrorMessage(err: any): void {
 		const message = this.getErrorMessage(err);
-
 		this.logError(err);
-
 		vscode.window.showErrorMessage(message);
 	}
 
