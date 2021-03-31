@@ -9,11 +9,9 @@ Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPsc
 + Filter and Edit data in Dataextensions (work with DEs like with CSV files)
 + Get dataextension metadata
 
-- === IMPORTANT ===
-- Additional API permissions are required for the new features
-- Update your MC Installed package and restart VS Code:
+- IMPORTANT: Additional API permissions are required for the new features to work. Add the following permissions to your MCFS Installed package and restart VS Code
 
-+ === REQUIRED PERMISSIONS ===
++ === ADDITIONAL MC PERMISSIONS ===
 + AUTOMATION: Automations (Read, Write, Execute)
 + DATA: Data Extensions (Read, Write)
 ```

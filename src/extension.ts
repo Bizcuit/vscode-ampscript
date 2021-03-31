@@ -12,13 +12,11 @@ import { FolderController } from './libs/folderController';
 let isConnectionManagerOpened = false;
 
 export async function activate(context: vscode.ExtensionContext) {
-	Utils.getInstance().log('MCFS extension activated');
-	
-	context.subscriptions.push(Utils.getInstance().telemetry);
-
-	Utils.getInstance().sendTelemetryEvent("activated");
-
 	try {
+		context.subscriptions.push(Utils.getInstance().telemetry);
+		Utils.getInstance().sendTelemetryEvent("activated");
+		Utils.getInstance().log('MCFS extension activated');
+
 		const mcfs = new MCFS();
 		
 		let connections = Utils.getInstance().getConfig('connections');
@@ -118,7 +116,7 @@ function connect(connection: Connection): void {
 	Utils.getInstance().sendTelemetryEvent("connect");
 
 	const mcfsUri = vscode.Uri.parse('mcfs://' + connection.account_id + '/');
-	
+
 	//TODO: replace folder
 
 	if (undefined === vscode.workspace.getWorkspaceFolder(mcfsUri)) {
@@ -184,7 +182,7 @@ function showPromoBanner(connectionManagerCallback: () => void) {
 
 function showPromoPage(externsionPath: string) {
 	const notifications = Utils.getInstance().getConfig('notifications');
-	const version = Utils.extensionVersion;
+	const version = Utils.extensionVersion.split(".", 2).join(".");
 
 	if (notifications["hasSeenPromoForVersion"] === version) {
 		return false;
