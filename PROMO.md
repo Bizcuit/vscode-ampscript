@@ -34,6 +34,10 @@ Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPsc
 * Set the filter and hit enter
 * Filter example: OrderID = 'ORD2123F2' AND SubscriberKey = 'ABC'
 
+## SFMC DevTools published
+
+We have been talking about this behind the scenes already for quite some time but on March 26 the [SFMC DevTools](https://bit.ly/mc-devtools) were finally open-sourced. It allows you to up-/download all kinds of metadata, run mass-deployments to multiple BUs and on top it can be integrated into your IDE or CI/CD solution. And here comes the best part: We are looking into the possibility of integrating it into this VSCode extension.
+
 # Direct connection to Marketing Cloud
 
 ## 1. Connect directly to your Marketing Cloud Account
