@@ -136,7 +136,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			Utils.getInstance().showErrorMessage("Query wait timeout");
 		}
 
-		return assetMetadata?.["targetId"];
+		return;
 	}
 
 

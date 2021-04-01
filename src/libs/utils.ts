@@ -12,7 +12,7 @@ export class Utils {
 	public readonly telemetry: TelemetryReporter;
 	private telementryEventLog: Array<string> = [];
 
-	public static readonly extensionId = "sergey-agadzhanov.AMPscript";
+	public static readonly extensionId = "mcfs";
 	public static get extensionVersion(): string {
 		return vscode.extensions.getExtension(Utils.extensionId)?.packageJSON?.version || "";
 	}

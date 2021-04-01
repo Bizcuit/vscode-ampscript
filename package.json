@@ -90,7 +90,19 @@
 					"command": "mcfs.query.run",
 					"when": "resourceExtname == .sql"
 				}
-			]
+			],
+			"editor/title": [
+				{
+					"when": "resourceExtname == .csv",
+					"command": "mcfs.dataextension.filter",
+					"group": "navigation"
+				},
+				{
+					"when": "resourceExtname == .sql",
+					"command": "mcfs.query.run",
+					"group": "navigation"
+				}
+			  ]
 		},
 		"configuration": {
 			"title": "MCFS Configuration",
