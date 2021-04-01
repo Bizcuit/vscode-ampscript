@@ -128,7 +128,8 @@ function connect(connection: Connection): void {
 			}
 		);
 	}
-
+	
+	vscode.commands.executeCommand('workbench.view.explorer');
 	Utils.getInstance().showInformationMessage(`Connected to ${connection.account_id}. Open File Explorer...`);
 }
 
