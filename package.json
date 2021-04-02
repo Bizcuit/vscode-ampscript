@@ -72,38 +72,53 @@
 			{
 				"command": "mcfs.dataextension.filter",
 				"title": "Filter a dataextension",
-				"category": "MCFS"
+				"category": "MCFS",
+				"icon": {
+					"light": "images/filter.icon.svg",
+					"dark": "images/filter.icon.svg"
+				}
 			},
 			{
 				"command": "mcfs.query.run",
 				"title": "Run SQL Query",
-				"category": "MCFS"
+				"category": "MCFS",
+				"icon": {
+					"light": "images/run.icon.svg",
+					"dark": "images/run.icon.svg"
+				}
 			}
 		],
 		"menus": {
 			"commandPalette": [
 				{
 					"command": "mcfs.dataextension.filter",
-					"when": "resourceExtname == .csv"
+					"when": "resourceExtname == .csv && resourceScheme == mcfs"
 				},
 				{
 					"command": "mcfs.query.run",
-					"when": "resourceExtname == .sql"
+					"when": "resourceExtname == .sql && resourceScheme == mcfs"
 				}
 			],
 			"editor/title": [
 				{
-					"when": "resourceExtname == .csv",
+					"when": "resourceExtname == .csv && resourceScheme == mcfs",
 					"command": "mcfs.dataextension.filter",
 					"group": "navigation"
 				},
 				{
-					"when": "resourceExtname == .sql",
+					"when": "resourceExtname == .sql && resourceScheme == mcfs",
 					"command": "mcfs.query.run",
 					"group": "navigation"
 				}
 			  ]
 		},
+		"viewsWelcome": [
+			{
+				"view": "explorer",
+				"contents": "Open MCFS connection manager and connect directly to your Salesforce Marketing Cloud account \n[Connect to SFMC](command:mcfs.open)",
+				"when": ""
+			}
+		],
 		"configuration": {
 			"title": "MCFS Configuration",
 			"properties": {

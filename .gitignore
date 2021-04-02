@@ -3,4 +3,3 @@ src/connection-manager/package-lock.json
 .DS_Store
 out
 node_modules
-*pxd
