@@ -1,7 +1,7 @@
 {
 	"name": "ampscript",
 	"displayName": "MCFS [AMPScript]",
-	"description": "This extension allows you to connect Visual Studio Code directly to your MC Account, enables syntax highlighting for AMPScript, has built-in documentation and much more",
+	"description": "Connect VSCode directly to your Marketing Cloud Account, enable syntax highlighting for AMPScript, get built-in AMPScript documentation and much more",
 	"version": "3.0.1",
 	"publisher": "sergey-agadzhanov",
 	"engines": {
