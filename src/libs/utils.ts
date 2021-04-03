@@ -35,13 +35,14 @@ export class Utils {
 		);
 	}
 
-	sendTelemetryEvent(event: string, deduplicate: boolean = false) {
+	sendTelemetryEvent(event: string, deduplicate: boolean = false, isError = false) {
 		if (deduplicate) {
 			if (this.telementryEventLog.includes(event)) return;
 			else this.telementryEventLog.push(event);
 		}
 
-		this.telemetry.sendTelemetryEvent(event);
+		if (isError) this.telemetry.sendTelemetryErrorEvent(event);
+		else this.telemetry.sendTelemetryEvent(event);
 	}
 
 	showInformationMessage(message: string) {
