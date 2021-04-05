@@ -330,7 +330,7 @@ export class DataextensionFolderManager extends FolderManager {
 		);
 
 		if (!hasTokenScopes) {
-			Utils.getInstance().sendTelemetryEvent("manager-dataextensions.missing_api_scope", true, true);
+			Utils.getInstance().sendTelemetryEvent("error.manager-dataextensions.missing_api_scope", true, true);
 			throw new Error('Additional permissions are required for this function: DATA => Data Extensions (Read, Write). Please update your MC installed package and restart VSCode');
 		}
 

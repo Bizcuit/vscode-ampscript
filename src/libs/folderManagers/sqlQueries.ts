@@ -32,7 +32,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 		);
 
 		if (!hasTokenScopes) {
-			Utils.getInstance().sendTelemetryEvent("manager-sqlqueries.missing_api_scope", true, true);
+			Utils.getInstance().sendTelemetryEvent("error.manager-sqlqueries.missing_api_scope", true, true);
 			throw new Error('Additional permissions are required for this function: AUTOMATION: Automations (Read, Write, Execute). Please update your installed package and restart VSCode');
 		}
 
