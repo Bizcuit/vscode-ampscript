@@ -56,6 +56,22 @@ Each asset folder includes a readonly '__raw.readonly.json' file. This is an API
 * s02.b01.content.amp - content of the first block in the second template stack
 * s02.b01.super.amp - super content of the first block in the second template stack
 
+### How to run an SQL query
+* Connect to your MC account
+* Find your SQL Query asset in the "SQL Queries" folder and open a "query.sql" file
+* Click a "Run SQL Query" button located in the top right corner of the editor (or run a "MCFS: Run SQL Query" command from the Command Pallet)
+
+![SQL Queries](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs_runquery.jpg)
+
+
+### How to filter a Dataextension
+* Connect to your MC account
+* Find your Dataextension asset in the "Dataextensions" folder and open a "rows.csv" file
+* Click a "Filter a Dataextension" button located in the top right corner of the editor (or run a "MCFS: Filter a Dataextension" command from the Command Pallet)
+* Set the filter and hit enter
+* Filter example: OrderID = 'ORD2123F2' AND SubscriberKey = 'ABC'
+
+![Dataextensions](https://raw.githubusercontent.com/Bizcuit/vscode-ampscript/master/images/mcfs_filterde.jpg)
 
 ### How it looks and works
 
