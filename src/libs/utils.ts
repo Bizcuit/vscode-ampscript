@@ -12,7 +12,7 @@ export class Utils {
 	public readonly telemetry: TelemetryReporter;
 	private telementryEventLog: Array<string> = [];
 
-	public static readonly extensionId = "mcfs";
+	public static readonly extensionId = "sergey-agadzhanov.AMPscript";
 	public static get extensionVersion(): string {
 		return vscode.extensions.getExtension(Utils.extensionId)?.packageJSON?.version || "";
 	}
@@ -29,7 +29,7 @@ export class Utils {
 	constructor() {
 		this.channel = vscode.window.createOutputChannel('MCFS');
 		this.telemetry = new TelemetryReporter(
-			Utils.extensionId,
+			"mcfs",
 			Utils.extensionVersion,
 			Buffer.from("OTc1M2Y5OTAtOTY0Yy00M2Q2LWFiYTEtYjZiMmQyZmVlZDNi", "base64").toString("utf-8")
 		);
