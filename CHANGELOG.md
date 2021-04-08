@@ -3,6 +3,9 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [3.0.2] - 2021-04-08
+- Clean Build
+
 ## [3.0.1] - 2021-03-23
 ### Added
 - MCFS: SQL Queries
