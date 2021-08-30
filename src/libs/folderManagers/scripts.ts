@@ -6,7 +6,7 @@ import { AxiosRequestConfig } from 'axios';
 import { Utils } from '../utils';
 
 
-export class scriptsFolderManager extends FolderManager {
+export class ScriptsFolderManager extends FolderManager {
 	readonly mountFolderName: string = "Scripts";
 	private directoriesCache: Map<string, Promise<Array<Directory>>>;
 
@@ -87,7 +87,7 @@ export class scriptsFolderManager extends FolderManager {
 	}
 
 	getAssetDirectoryName(name: string, assetData: any): string {
-		return `Ω 🟥  ${name}.script`;
+		return `Ω 🟪  ${name}.script`;
 	}
 
 	getFileExtensions(): Array<string> {
