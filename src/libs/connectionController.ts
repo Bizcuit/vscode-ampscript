@@ -78,7 +78,7 @@ export class ConnectionController {
 		return ConnectionController.instance;
 	}
 
-	setConnections(connections: Array<Connection>) {
+	setConnections(connections: Array<Connection>): void {
 		connections.forEach(c => {
 			if (c.grant_type === undefined) {
 				c.grant_type = 'client_credentials'
@@ -87,10 +87,10 @@ export class ConnectionController {
 		});
 	}
 
-	async hasTokenRequiredScopes(connectionId: string, scopes: Array<string>): Promise<Boolean> {
+	async hasTokenRequiredScopes(connectionId: string, scopes: Array<string>): Promise<boolean> {
 		const token = await this.getToken(connectionId);
 
-		for (let scope of scopes) {
+		for (const scope of scopes) {
 			if (!token.scope.includes(scope)) return false;
 		}
 
@@ -99,7 +99,7 @@ export class ConnectionController {
 
 	async getToken(connectionId: string): Promise<Token> {
 		const pToken: Promise<Token> = this.tokens.get(connectionId) || this.refreshToken(connectionId);
-		let error: Error | undefined = undefined;
+		let error: any = undefined;
 
 		try {
 			let token = await pToken;
@@ -112,7 +112,7 @@ export class ConnectionController {
 				return token;
 			}
 		}
-		catch (err) {
+		catch (err: any) {
 			error = err;
 		}
 
@@ -144,7 +144,7 @@ export class ConnectionController {
 		}).then((response: any) => {
 			const token = response.data as Token;
 			token.expires = new Date(now + (token.expires_in - 5) * 1000);
-			return token; ``
+			return token;
 		});
 
 		this.tokens.set(connectionId, pToken);
@@ -165,7 +165,7 @@ export class ConnectionController {
 			const response = await axios(config);
 			return response.data;
 		}
-		catch (ex) {
+		catch (ex: any) {
 			throw (ex instanceof APIException ? ex : new APIException('REST API failed', ex.message, ex));
 		}
 	}
@@ -220,7 +220,7 @@ export class ConnectionController {
 
 			return result;
 		}
-		catch (ex) {
+		catch (ex: any) {
 			throw (ex instanceof APIException ? ex : new APIException('SOAP API failed', ex.message, ex));
 		}
 	}

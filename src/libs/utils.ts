@@ -7,7 +7,7 @@ export class Utils {
 
 	private static instance: Utils | null = null;
 	private channel: vscode.OutputChannel;
-	private isConfigUpdated: boolean = true;
+	private isConfigUpdated = true;
 
 	public readonly telemetry: TelemetryReporter;
 	private telementryEventLog: Array<string> = [];
@@ -35,14 +35,16 @@ export class Utils {
 		);
 	}
 
-	sendTelemetryEvent(event: string, deduplicate: boolean = false, isError = false) {
-		if (deduplicate) {
+	sendTelemetryEvent(event: string, deduplicate = false, isError = false): void {
+		return;
+        
+        /*if (deduplicate) {
 			if (this.telementryEventLog.includes(event)) return;
 			else this.telementryEventLog.push(event);
 		}
 
 		if (isError) this.telemetry.sendTelemetryErrorEvent(event);
-		else this.telemetry.sendTelemetryEvent(event);
+		else this.telemetry.sendTelemetryEvent(event);*/
 	}
 
 	showInformationMessage(message: string) {
