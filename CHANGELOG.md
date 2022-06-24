@@ -3,6 +3,10 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [3.0.4] - 2022-06-24
+- Edit Automation Studio Script Activities (special thanks go to @danielrubiorueda)
+- Fix AXIOS concurrency requests issue
+
 ## [3.0.2] - 2021-04-08
 - Clean Build
 

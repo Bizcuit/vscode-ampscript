@@ -136,7 +136,9 @@ export class ConnectionController {
 
 		const now = new Date().getTime();
 
-		const pToken = axios({
+        const ax = axios.create();
+
+		const pToken = ax({
 			method: 'post',
 			url: connection.authBaseUri + 'v2/token',
 			headers: { 'Content-Type': 'application/json' },
@@ -161,8 +163,8 @@ export class ConnectionController {
 				'Content-Type': 'application/json',
 				'Authorization': `${token.token_type} ${token.access_token}`
 			};
-
-			const response = await axios(config);
+            const ax = axios.create();
+			const response = await ax(config);
 			return response.data;
 		}
 		catch (ex: any) {
@@ -214,7 +216,8 @@ export class ConnectionController {
 				]
 			};
 
-			const response = await axios(axiosConfig);
+            const ax = axios.create();
+			const response = await ax(axiosConfig);
 
 			const result = await response.data;
 

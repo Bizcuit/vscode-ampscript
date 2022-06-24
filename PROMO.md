@@ -5,6 +5,7 @@ Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPsc
 ```diff
 + === NEW FEATURES ===
 
++ Edit Automation Studio Script Activities (special thanks go to @danielrubiorueda)
 + Edit and Run SQL Queries (special thanks go to Douglas Midgley)
 + Filter and Edit data in Dataextensions (work with DEs like with CSV files)
 + Get dataextension metadata
