@@ -5,6 +5,7 @@ import { FolderManagerUri } from './folderManagerUri';
 import { Asset, AssetFile } from './asset';
 import { ContentBuilderFolderManager, AssetSubtype, ContentBuilderStandardTypes } from './folderManagers/contentBuilder';
 import { SqlQueriesFolderManager } from './folderManagers/sqlQueries';
+import { ScriptsFolderManager } from './folderManagers/scripts';
 import { DataextensionFolderManager } from './folderManagers/dataextensions';
 import { Utils } from './utils';
 
@@ -22,6 +23,7 @@ export class FolderController {
 		this.addManager(new ContentBuilderFolderManager("Content Builder: Shared Content", true, ContentBuilderStandardTypes, false));
 		this.addManager(new ContentBuilderFolderManager("Cloud Pages", false, [AssetSubtype.WEBPAGE], true));
 		this.addManager(new SqlQueriesFolderManager());
+		this.addManager(new ScriptsFolderManager());
 		this.addManager(new DataextensionFolderManager("Dataextensions", false));
 	}
 
