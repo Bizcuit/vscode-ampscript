@@ -36,18 +36,21 @@ export class Utils {
 	}
 
 	sendTelemetryEvent(event: string, deduplicate = false, isError = false): void {
-		return;
-        
-        /*if (deduplicate) {
-			if (this.telementryEventLog.includes(event)) return;
-			else this.telementryEventLog.push(event);
-		}
-
-		if (isError) this.telemetry.sendTelemetryErrorEvent(event);
-		else this.telemetry.sendTelemetryEvent(event);*/
+        try{
+            if (deduplicate) {
+                if (this.telementryEventLog.includes(event)) return;
+                else this.telementryEventLog.push(event);
+            }
+    
+            if (isError) this.telemetry.sendTelemetryErrorEvent(event);
+            else this.telemetry.sendTelemetryEvent(event);
+        }
+        catch(err: any){
+            this.logError(err)
+        }
 	}
 
-	showInformationMessage(message: string) {
+	showInformationMessage(message: string): void {
 		this.log(message)
 		vscode.window.showInformationMessage(message);
 	}
@@ -74,11 +77,11 @@ export class Utils {
 		return message;
 	}
 
-	log(message: string) {
+	log(message: string): void {
 		this.channel.appendLine(`${new Date().toISOString()} => ${message}`);
 	}
 
-	logError(err: any) {
+	logError(err: any): void {
 		const message: string = this.getErrorMessage(err);
 
 		this.log('ERROR ********************************************');
@@ -106,7 +109,7 @@ export class Utils {
 		return config?.get(section);
 	}
 
-	setConfig(section: string, value: any) {
+	setConfig(section: string, value: any): void {
 		const config = vscode.workspace.getConfiguration('mcfs');
 
 		const updateInterval = setInterval(_ => {
@@ -120,13 +123,13 @@ export class Utils {
 		}, 100);
 	}
 
-	setConfigField(section: string, field: string, value: any) {
+	setConfigField(section: string, field: string, value: any): void {
 		const data = this.getConfig(section);
 		data[field] = value;
 		this.setConfig(section, data);
 	}
 
-	delay(time: number) {
+	delay(time: number): any {
 		return new Promise((resolve) => {
 			setTimeout(() => resolve(time), time);
 		});
@@ -189,7 +192,7 @@ export class WebPanel {
 		});
 	}
 
-	public close() {
+	public close(): void {
 		this.panel?.dispose();
 	}
 
