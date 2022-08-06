@@ -2,8 +2,8 @@ import { Asset, AssetFile } from '../asset';
 import { FolderManagerUri } from '../folderManagerUri';
 import { FolderManager, Directory, CustomAction } from '../folderManager';
 import { ConnectionController } from '../connectionController';
-import { AxiosRequestConfig } from 'axios';
 import { Utils } from '../utils';
+import { ApiRequestConfig } from '../httpUtils';
 
 
 export class SqlQueriesFolderManager extends FolderManager {
@@ -36,7 +36,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 			throw new Error('Additional permissions are required for this function: AUTOMATION: Automations (Read, Write, Execute). Please update your installed package and restart VSCode');
 		}
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: `/automation/v1/queries/category/${directoryId}`,
 			params: {
@@ -44,7 +44,7 @@ export class SqlQueriesFolderManager extends FolderManager {
 				'$pageSize': 100,
 				'retrievalType': 1
 			}
-		};
+		});
 
 		const data: any = await ConnectionController.getInstance().restRequest(directoryUri.connectionId, config);
 
@@ -77,11 +77,11 @@ export class SqlQueriesFolderManager extends FolderManager {
 	async saveAsset(asset: Asset): Promise<void> {
 		const assetData: any = JSON.parse(asset.content);
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'patch',
 			url: `/automation/v1/queries/${assetData.queryDefinitionId}`,
 			data: assetData
-		};
+		});
 
 		await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
@@ -143,20 +143,20 @@ export class SqlQueriesFolderManager extends FolderManager {
 
 
 	private async runQuery(queryId: string, connectionId: string): Promise<void> {
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'post',
 			url: `automation/v1/queries/${queryId}/actions/start`
-		};
+		});
 
 		await ConnectionController.getInstance().restRequest(connectionId, config);
 		return;
 	}
 
 	private async isQueryRunning(queryId: string, connectionId: string): Promise<boolean> {
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: `automation/v1/queries/${queryId}/actions/isrunning`
-		};
+		});
 
 		const data: any = await ConnectionController.getInstance().restRequest(connectionId, config);
 
@@ -186,14 +186,14 @@ export class SqlQueriesFolderManager extends FolderManager {
 			return cached;
 		}
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: '/automation/v1/folders/',
 			params: {
 				'$pagesize': '200',
 				'$filter': `categorytype eq queryactivity`
 			}
-		};
+		});
 
 		const pDirectories = ConnectionController.getInstance()
 			.restRequest(connectionId, config)

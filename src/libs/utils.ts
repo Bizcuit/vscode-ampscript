@@ -136,6 +136,8 @@ export class Utils {
 	}
 }
 
+
+
 export class WebPanelMessage {
 	public action = '';
 	public content: any = null;

@@ -1,7 +1,8 @@
 'use strict';
 
-import axios, { AxiosRequestConfig } from 'axios';
 import * as xml2js from 'xml2js';
+import { ApiRequestConfig, HttpUtils } from './httpUtils';
+import { Utils } from './utils';
 
 interface Token {
 	rest_instance_url: string;
@@ -135,37 +136,43 @@ export class ConnectionController {
 		}
 
 		const now = new Date().getTime();
+        
+        const apiConfig = new ApiRequestConfig({
+            baseURL: connection.authBaseUri,
+            method: "POST",
+            url: "/v2/token",
+            data: JSON.stringify(connection)
+        });
 
-        const ax = axios.create();
-
-		const pToken = ax({
-			method: 'post',
-			url: connection.authBaseUri + 'v2/token',
-			headers: { 'Content-Type': 'application/json' },
-			data: connection
-		}).then((response: any) => {
-			const token = response.data as Token;
+        const pToken = HttpUtils.getInstance().makeRestApiCall(apiConfig).then(tokenData => {
+            const token = tokenData as Token;
 			token.expires = new Date(now + (token.expires_in - 5) * 1000);
-			return token;
-		});
+            Utils.getInstance().log(`Token object is ready for ${connectionId}: ${JSON.stringify(token.token_type)}`);
+			return token;            
+        }).catch(err => {
+            Utils.getInstance().logError(err);
+            throw err;
+        });
 
-		this.tokens.set(connectionId, pToken);
+        this.tokens.set(connectionId, pToken);
+
+        Utils.getInstance().log(`Token for ${connectionId} is added to the connections pool: size=${this.tokens?.size}`);
 
 		return pToken;
 	}
 
-	async restRequest(connectionId: string, config: AxiosRequestConfig): Promise<any> {
+	async restRequest(connectionId: string, config: ApiRequestConfig): Promise<any> {
 		try {
 			const token: Token = await this.getToken(connectionId);
 
 			config.baseURL = token.rest_instance_url;
 			config.headers = {
-				'Content-Type': 'application/json',
 				'Authorization': `${token.token_type} ${token.access_token}`
 			};
-            const ax = axios.create();
-			const response = await ax(config);
-			return response.data;
+
+			const data = await HttpUtils.getInstance().makeRestApiCall(config);
+            return data;
+            
 		}
 		catch (ex: any) {
 			throw (ex instanceof APIException ? ex : new APIException('REST API failed', ex.message, ex));
@@ -196,7 +203,7 @@ export class ConnectionController {
 				}
 			};
 
-			const axiosConfig: AxiosRequestConfig = {
+			const requestConfig: ApiRequestConfig = new ApiRequestConfig({
 				baseURL: token.soap_instance_url,
 				url: '/Service.asmx',
 				method: 'post',
@@ -204,24 +211,16 @@ export class ConnectionController {
 				headers: {
 					'Content-Type': 'text/xml',
 					'SOAPAction': config.operation
-				},
-				transformResponse: [
-					async function (data): Promise<any> {
-						const parser = new xml2js.Parser();
-						return parser.parseStringPromise(data).then(result => {
-							const body = result["soap:Envelope"]["soap:Body"];
-							return config.transformResponse === undefined ? body : config.transformResponse(body);
-						});
-					}
-				]
-			};
+				}
+            });
 
-            const ax = axios.create();
-			const response = await ax(axiosConfig);
-
-			const result = await response.data;
-
-			return result;
+            const responseData = await HttpUtils.getInstance().makeApiCall(requestConfig);
+            const parser = new xml2js.Parser();
+            
+            return parser.parseStringPromise(responseData).then(result => {
+                const body = result["soap:Envelope"]["soap:Body"];
+                return config.transformResponse === undefined ? body : config.transformResponse(body);
+            });
 		}
 		catch (ex: any) {
 			throw (ex instanceof APIException ? ex : new APIException('SOAP API failed', ex.message, ex));

@@ -1,8 +1,8 @@
-import { AxiosRequestConfig } from 'axios';
 import { Asset, AssetFile } from '../asset';
 import { ConnectionController } from '../connectionController';
 import { FolderManager, Directory } from '../folderManager';
 import { FolderManagerUri } from '../folderManagerUri';
+import { ApiRequestConfig } from '../httpUtils';
 
 export enum AssetType {
 	UNKNOWN = 0,
@@ -93,11 +93,11 @@ export class ContentBuilderFolderManager extends FolderManager {
 		}
 
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'patch',
 			url: `/asset/v1/content/assets/${assetData.id}`,
 			data: data
-		};
+		});
 
 		await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
@@ -199,7 +199,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 	}
 
 	private async getAssetsByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Asset>> {
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'post',
 			url: '/asset/v1/content/assets/query',
 			data: {
@@ -225,7 +225,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 					}
 				}
 			}
-		};
+		});
 
 		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 
@@ -377,7 +377,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 	private async getSubdirectoriesByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Directory>> {
 		const scope = this.isSharedFolderScope ? "Shared" : "Ours";
 		
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: '/asset/v1/content/categories/',
 			params: {
@@ -385,7 +385,7 @@ export class ContentBuilderFolderManager extends FolderManager {
 				'$filter': `parentId eq ${directoryId}`,
 				'scope': scope
 			}
-		};
+		});
 
 		const data: any = await ConnectionController.getInstance().restRequest(uri.connectionId, config);
 

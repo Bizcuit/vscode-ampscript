@@ -2,8 +2,8 @@ import { Asset, AssetFile } from '../asset';
 import { FolderManagerUri } from '../folderManagerUri';
 import { FolderManager, Directory } from '../folderManager';
 import { ConnectionController } from '../connectionController';
-import { AxiosRequestConfig } from 'axios';
 import { Utils } from '../utils';
+import { ApiRequestConfig } from '../httpUtils';
 
 
 export class ScriptsFolderManager extends FolderManager {
@@ -30,7 +30,7 @@ export class ScriptsFolderManager extends FolderManager {
 			throw new Error('Additional permissions are required for this function: AUTOMATION: Automations (Read, Write, Execute). Please update your installed package and restart VSCode');
 		}
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: `/automation/v1/scripts/category/${directoryId}`,
 			params: {
@@ -38,7 +38,7 @@ export class ScriptsFolderManager extends FolderManager {
 				'$pageSize': 100,
 				'retrievalType': 1
 			}
-		};
+		});
 
 		const data: any = await ConnectionController.getInstance().restRequest(directoryUri.connectionId, config);
 
@@ -71,11 +71,11 @@ export class ScriptsFolderManager extends FolderManager {
 	async saveAsset(asset: Asset): Promise<void> {
 		const assetData: any = JSON.parse(asset.content);
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'patch',
 			url: `/automation/v1/scripts/${assetData.ssjsActivityId}`,
 			data: assetData
-		};
+		});
 
 		await ConnectionController.getInstance().restRequest(asset.connectionId, config);
 	}
@@ -115,14 +115,14 @@ export class ScriptsFolderManager extends FolderManager {
 			return cached;
 		}
 
-		const config: AxiosRequestConfig = {
+		const config = new ApiRequestConfig({
 			method: 'get',
 			url: '/automation/v1/folders/',
 			params: {
 				'$pagesize': '200',
 				'$filter': `categorytype eq ssjsactivity`
 			}
-		};
+		});
 
 		const pDirectories = ConnectionController.getInstance()
 			.restRequest(connectionId, config)
