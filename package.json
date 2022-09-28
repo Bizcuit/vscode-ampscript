@@ -2,7 +2,7 @@
 	"name": "ampscript",
 	"displayName": "MCFS [AMPScript]",
 	"description": "Connect VSCode directly to your Marketing Cloud Account, enable syntax highlighting for AMPScript, get built-in AMPScript documentation and much more",
-	"version": "3.1.0",
+	"version": "3.0.5",
 	"publisher": "sergey-agadzhanov",
 	"engines": {
 		"vscode": "^1.54.0"
