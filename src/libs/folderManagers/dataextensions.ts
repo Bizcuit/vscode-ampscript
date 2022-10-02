@@ -23,15 +23,25 @@ interface DataextensionColumn {
 export class DataextensionFolderManager extends FolderManager {
 	readonly mountFolderName: string;
 	readonly ignoreDirectories: boolean;
+    readonly rootFolderCustomerKey: string;
+    readonly folderContentType: string;
 	private directoriesCache: Map<string, number>;
 	private filterString = "";
 
-	constructor(mountFolderName: string, ignoreDirectories: boolean) {
+
+	constructor(
+        mountFolderName: string, 
+        ignoreDirectories: boolean, 
+        rootFolderCustomerKey = "dataextension_default",
+        folderContentType = "dataextension") 
+    {
 		super();
 
 		this.mountFolderName = mountFolderName;
 		this.ignoreDirectories = ignoreDirectories;
-		this.directoriesCache = new Map<string, number>();
+		this.rootFolderCustomerKey = rootFolderCustomerKey;
+        this.folderContentType = folderContentType;
+        this.directoriesCache = new Map<string, number>();
 
 		this.customActions.push({
 			command: "mcfs.dataextension.filter",
@@ -323,7 +333,7 @@ export class DataextensionFolderManager extends FolderManager {
 		throw new Error(`Path not found: ${uri.globalPath}`);
 	}
 
-	private async getSubdirectoriesByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Directory>> {
+    private async findDirectories(uri: FolderManagerUri, filter: any): Promise<Array<Directory>> {
 		const hasTokenScopes = await ConnectionController.getInstance().hasTokenRequiredScopes(
 			uri.connectionId,
 			['data_extensions_read', 'data_extensions_write']
@@ -339,19 +349,7 @@ export class DataextensionFolderManager extends FolderManager {
 			body: SoapUtils.createRetrieveBody(
 				"DataFolder",
 				["ID", "Name", "ParentFolder.ID"],
-				{
-					LeftOperand: {
-						Property: "ParentFolder.ID",
-						SimpleOperator: "equals",
-						Value: directoryId
-					},
-					LogicalOperator: "AND",
-					RightOperand: {
-						Property: "ContentType",
-						SimpleOperator: "equals",
-						Value: "dataextension"
-					}
-				}
+				filter
 			),
 			transformResponse: (body) => {
 				return SoapUtils.getArrProp(body, "RetrieveResponseMsg.Results").map((e: any) => {
@@ -365,14 +363,32 @@ export class DataextensionFolderManager extends FolderManager {
 		} as SoapRequestConfig);
 
 		if (data === undefined) return [];
+        
+        return data as Array<Directory>
+    }
 
+	private async getSubdirectoriesByDirectoryId(uri: FolderManagerUri, directoryId: number): Promise<Array<Directory>> {
+		const data = await this.findDirectories(uri, {
+            LeftOperand: {
+                Property: "ParentFolder.ID",
+                SimpleOperator: "equals",
+                Value: directoryId
+            },
+            LogicalOperator: "AND",
+            RightOperand: {
+                Property: "ContentType",
+                SimpleOperator: "equals",
+                Value: this.folderContentType
+            }
+        });
+        
 		if (directoryId !== 0) {
 			for (const d of data as Array<Directory>) {
 				this.directoriesCache.set(uri.getChildPath(d.name), d.id);
 			}
 		}
 
-		return data as Array<Directory>;
+		return data;
 	}
 
 	private async getRootDirectoryId(uri: FolderManagerUri): Promise<number> {
@@ -380,7 +396,19 @@ export class DataextensionFolderManager extends FolderManager {
 			return this.directoriesCache.get(uri.mountPath) || 0;
 		}
 
-		const subdirectories: Array<Directory> = await this.getSubdirectoriesByDirectoryId(uri, 0);
+		const subdirectories: Array<Directory> = await this.findDirectories(uri, {
+            LeftOperand: {
+                Property: "CustomerKey",
+                SimpleOperator: "equals",
+                Value: this.rootFolderCustomerKey
+            },
+            LogicalOperator: "AND",
+            RightOperand: {
+                Property: "ContentType",
+                SimpleOperator: "equals",
+                Value: this.folderContentType
+            }
+        });
 
 		this.directoriesCache.set(uri.globalPath, subdirectories[0].id);
 
