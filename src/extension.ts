@@ -64,7 +64,13 @@ export async function activate(context: vscode.ExtensionContext) {
 			openConnectionManager();
 		}));
 
+        const registeredCommands: Array<string> = [];
+
 		FolderController.getInstance().customActions.forEach((a) => {
+            if(registeredCommands.includes(a.command)) return;
+
+            registeredCommands.push(a.command);
+
 			context.subscriptions.push(vscode.commands.registerTextEditorCommand(a.command, async (textEditor: vscode.TextEditor, edit: vscode.TextEditorEdit, args: any[]) => {
 				Utils.getInstance().sendTelemetryEvent(`customaction-${a.command}`);
 
@@ -80,7 +86,10 @@ export async function activate(context: vscode.ExtensionContext) {
 					title: a.waitLabel,
 					cancellable: true
 				}, async (progress, token) => {
-					const result = await a.callback(fmUri, currentContent);
+                    const result = await FolderController.getInstance().getManager(fmUri.mountFolderName)
+                                    ?.customActions
+                                    ?.find((c) => c.command == a.command)
+                                    ?.callback(fmUri, currentContent);
 
 					if (result !== undefined && currentContent !== result) {
 						textEditor.edit((editBuilder) => {

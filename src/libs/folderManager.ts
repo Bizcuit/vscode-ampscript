@@ -102,6 +102,7 @@ export abstract class FolderManager {
 	 * @param directoryName 
 	 */
 	getAssetNameByDirectoryName(directoryName: string): string | undefined {
+        /*eslint no-control-regex: "off"*/
 		const match = directoryName.match(/^(?<prefix>([^\x00-\x7F]|\s)+)(?<name>.+)\.(?<suffix>[^.]+)$/);
 		return match?.groups?.name;
 	}
