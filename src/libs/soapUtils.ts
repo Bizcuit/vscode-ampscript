@@ -134,13 +134,14 @@ export class SoapFilterExpression {
 
 
 	getFilterSide(side: any): any {
-		switch (side.type) {
+		let name = "";
+
+        switch (side.type) {
 			case "Literal":
 				return side.value;
 			case "Identifier":
 				return side.name;
 			case "ArrayExpression":
-				let name = "";
 				side.elements.forEach((e: any) => { name += e.name + " "; });
 				return name.trim();
 		}

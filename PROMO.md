@@ -1,21 +1,12 @@
-# MCFS [AMPScript] v3.0.1
+# MCFS [AMPScript] v3.0.6
 
 Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPscript [MCFS]** extension for Visual Studio Code. This version brings some really cool new features, that I would like to share with you. Share your ideas using [this form](https://docs.google.com/forms/d/e/1FAIpQLSc8NCJcqTxMIIJ5J1pWKTnPY2JewvTS8GU6b9-Lvhdze1N4RA/viewform?usp=sf_link), leave your feedback on the [Extension Page](https://marketplace.visualstudio.com/items?itemName=sergey-agadzhanov.AMPscript) or add a star on my [github repository](https://github.com/Bizcuit/vscode-ampscript).
 
 ```diff
 + === NEW FEATURES ===
 
-+ Edit Automation Studio Script Activities (special thanks go to @danielrubiorueda)
-+ Edit and Run SQL Queries (special thanks go to Douglas Midgley)
-+ Filter and Edit data in Dataextensions (work with DEs like with CSV files)
-+ Get dataextension metadata
-
-- IMPORTANT: Additional API permissions are required for the new features to work. 
-- Add the following permissions to your MCFS Installed package and restart VS Code:
-
-+ === ADDITIONAL MC PERMISSIONS ===
-+ AUTOMATION: Automations (Read, Write, Execute)
-+ DATA: Data Extensions (Read, Write)
++ Extension now works with Corporate Proxies
++ Support for shared Dataextensions
 ```
 
 ### To run an SQL query
