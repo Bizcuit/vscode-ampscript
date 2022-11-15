@@ -3,6 +3,12 @@ All notable changes to the "AMPScript" extension will be documented in this file
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [3.0.6] - 2022-11-15
+- Support for Shared Dataextensions
+
+## [3.0.5] - 2022-09-28
+- Switched to native HTTP calls to support Corporate Proxies
+
 ## [3.0.4] - 2022-06-24
 - Edit Automation Studio Script Activities (special thanks go to @danielrubiorueda)
 - Fix AXIOS concurrency requests issue
