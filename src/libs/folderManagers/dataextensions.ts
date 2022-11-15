@@ -410,6 +410,15 @@ export class DataextensionFolderManager extends FolderManager {
             }
         });
 
+        /** Access to shared DEs in only possible through the Ent BU */
+        if(this.folderContentType == "shared_dataextension" && subdirectories && subdirectories.length == 0){
+            throw new Error("Connect to the Enterprise Business Unit (top level) to get access to shared Dataextensions");
+        }
+
+        if(!subdirectories || subdirectories.length == 0){
+            throw new Error("Can't find the root Dataextensions folder");
+        }
+
 		this.directoriesCache.set(uri.globalPath, subdirectories[0].id);
 
 		return subdirectories[0].id;

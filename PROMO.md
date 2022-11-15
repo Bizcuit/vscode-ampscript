@@ -6,7 +6,7 @@ Greetings Marketing Cloud Experts! You've just updated (or installed) an **AMPsc
 + === NEW FEATURES ===
 
 + Extension now works with Corporate Proxies
-+ Support for shared Dataextensions
++ Support for shared Dataextensions (you need to be connected to Ent BU)
 ```
 
 ### To run an SQL query

@@ -4,7 +4,7 @@ All notable changes to the "AMPScript" extension will be documented in this file
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [3.0.6] - 2022-11-15
-- Support for Shared Dataextensions
+- Support for Shared Dataextensions (only when connected to ENT BU)
 
 ## [3.0.5] - 2022-09-28
 - Switched to native HTTP calls to support Corporate Proxies
