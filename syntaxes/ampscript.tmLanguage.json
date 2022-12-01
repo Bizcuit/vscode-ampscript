@@ -2,6 +2,7 @@
 	"version": "2.0",
 	"name": "AMPScript",
 	"scopeName": "source.amp",
+	"fileNames": "amp",
 	"keyEquivalent": "@A",
 	"foldingStartMarker": "%%\\[\\s*$",
 	"foldingStopMarker": "^\\s*\\]%%$",
@@ -26,6 +27,24 @@
 		},
 		{
 			"include": "text.html.basic"
+		},
+		{
+			"include": "#ampscript-comments"
+		},
+		{
+			"include": "#ampscript-functions"
+		},
+		{
+			"include": "#ampscript-numeric"
+		},
+		{
+			"include": "#ampscript-contstants"
+		},
+		{
+			"include": "#ampscript-language-elements"
+		},
+		{
+			"include": "#ampscript-strings"
 		}
 	],
 	"repository": {
@@ -44,6 +63,9 @@
 				}
 			},
 			"patterns": [
+				{
+					"include": "text.html.basic"
+				},
 				{
 					"include": "#ampscript-comments"
 				},
